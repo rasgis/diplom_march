@@ -8,12 +8,58 @@ import {
 } from "../../../reducers/productSlice";
 import { fetchCategories } from "../../../reducers/categorySlice";
 import { ROUTES } from "../../../constants/routes";
-import Modal from "../../../components/Modal/Modal";
 import ProductForm from "./ProductForm";
 import styles from "./Admin.module.css";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import WarningIcon from "@mui/icons-material/Warning";
+
+interface DeleteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+}
+
+const DeleteModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+}: DeleteModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className={styles.modal}>
+      <div className={styles.modalContent}>
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>
+            <WarningIcon className={styles.buttonIcon} />
+            {title}
+          </h2>
+          <button className={styles.modalClose} onClick={onClose}>
+            <CloseIcon />
+          </button>
+        </div>
+        <div className={styles.modalBody}>
+          <p>Вы уверены, что хотите удалить этот товар?</p>
+          <p>Это действие нельзя будет отменить.</p>
+        </div>
+        <div className={styles.modalFooter}>
+          <button className={styles.modalCancelButton} onClick={onClose}>
+            Отмена
+          </button>
+          <button className={styles.modalConfirmButton} onClick={onConfirm}>
+            <DeleteIcon className={styles.buttonIcon} />
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProductList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -87,11 +133,6 @@ const ProductList: React.FC = () => {
     setProductToEdit(null);
   };
 
-  const handleFormConfirm = () => {
-    // Здесь мы не делаем ничего, так как форма сама обрабатывает отправку
-    // через свойство onSubmit
-  };
-
   // Функция для получения названия категории по ID
   const getCategoryName = (categoryId: string) => {
     const category = categories.find((cat) => cat.id === categoryId);
@@ -115,7 +156,7 @@ const ProductList: React.FC = () => {
       <div className={styles.header}>
         <h2>Управление товарами</h2>
         <button onClick={handleAddClick} className={styles.addButton}>
-          <AddIcon fontSize="small" className={styles.buttonIcon} />
+          <AddIcon className={styles.buttonIcon} />
           Добавить товар
         </button>
       </div>
@@ -124,19 +165,18 @@ const ProductList: React.FC = () => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>ID</th>
               <th>Изображение</th>
               <th>Название</th>
-              <th>Категория</th>
+              <th>Описание</th>
               <th>Цена</th>
-              <th>Единица измерения</th>
+              <th>Категория</th>
+              <th>Ед. изм.</th>
               <th>Действия</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product) => (
               <tr key={product.id}>
-                <td>{product.id}</td>
                 <td>
                   <img
                     src={product.image}
@@ -145,8 +185,12 @@ const ProductList: React.FC = () => {
                   />
                 </td>
                 <td>{product.name}</td>
-                <td>{getCategoryName(product.categoryId)}</td>
+                <td>{product.description}</td>
                 <td>{product.price} ₽</td>
+                <td>
+                  {categories.find((cat) => cat.id === product.categoryId)
+                    ?.name || "Не указана"}
+                </td>
                 <td>{product.unitOfMeasure}</td>
                 <td>
                   <div className={styles.actions}>
@@ -154,20 +198,14 @@ const ProductList: React.FC = () => {
                       onClick={() => handleEditClick(product)}
                       className={styles.editButton}
                     >
-                      <EditIcon
-                        fontSize="small"
-                        className={styles.buttonIcon}
-                      />
+                      <EditIcon className={styles.buttonIcon} />
                       Редактировать
                     </button>
                     <button
                       onClick={() => handleDeleteClick(product.id)}
                       className={styles.deleteButton}
                     >
-                      <DeleteIcon
-                        fontSize="small"
-                        className={styles.buttonIcon}
-                      />
+                      <DeleteIcon className={styles.buttonIcon} />
                       Удалить
                     </button>
                   </div>
@@ -178,30 +216,33 @@ const ProductList: React.FC = () => {
         </table>
       </div>
 
-      <Modal
+      <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
         title="Подтверждение удаления"
-      >
-        <p>Вы уверены, что хотите удалить этот товар?</p>
-        <p>Это действие нельзя отменить.</p>
-      </Modal>
+      />
 
-      <Modal
-        isOpen={isFormModalOpen}
-        onClose={handleFormCancel}
-        onConfirm={handleFormConfirm}
-        title={productToEdit ? "Редактирование товара" : "Добавление товара"}
-        hideActions={true}
-      >
-        <ProductForm
-          product={productToEdit}
-          categories={categories}
-          onSubmit={handleFormSubmit}
-          onCancel={handleFormCancel}
-        />
-      </Modal>
+      {isFormModalOpen && (
+        <div className={styles.modal}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>
+                {productToEdit ? "Редактирование товара" : "Добавление товара"}
+              </h2>
+              <button className={styles.modalClose} onClick={handleFormCancel}>
+                <CloseIcon />
+              </button>
+            </div>
+            <ProductForm
+              product={productToEdit}
+              categories={categories}
+              onSubmit={handleFormSubmit}
+              onCancel={handleFormCancel}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

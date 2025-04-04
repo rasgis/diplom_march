@@ -7,6 +7,55 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import CloseIcon from "@mui/icons-material/Close";
+import WarningIcon from "@mui/icons-material/Warning";
+
+interface DeleteModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  categoryName: string;
+}
+
+const DeleteModal = ({
+  isOpen,
+  onClose,
+  onConfirm,
+  title,
+  categoryName,
+}: DeleteModalProps) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className={styles.modal}>
+      <div className={styles.modalContent}>
+        <div className={styles.modalHeader}>
+          <h2 className={styles.modalTitle}>
+            <WarningIcon className={styles.buttonIcon} />
+            {title}
+          </h2>
+          <button className={styles.modalClose} onClick={onClose}>
+            <CloseIcon />
+          </button>
+        </div>
+        <div className={styles.modalBody}>
+          <p>Вы уверены, что хотите удалить категорию "{categoryName}"?</p>
+          <p>Это действие нельзя будет отменить.</p>
+        </div>
+        <div className={styles.modalFooter}>
+          <button className={styles.modalCancelButton} onClick={onClose}>
+            Отмена
+          </button>
+          <button className={styles.modalConfirmButton} onClick={onConfirm}>
+            <DeleteIcon className={styles.buttonIcon} />
+            Удалить
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 interface CategoryListProps {
   categories: Category[];
@@ -62,6 +111,10 @@ const CategoryList: React.FC<CategoryListProps> = ({
       await onDelete(deletingCategory.id);
       setDeletingCategory(null);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setDeletingCategory(null);
   };
 
   const handleSubmit = async (
@@ -168,11 +221,19 @@ const CategoryList: React.FC<CategoryListProps> = ({
       {open && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h2>
-              {editingCategory
-                ? "Редактировать категорию"
-                : "Добавить категорию"}
-            </h2>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>
+                {editingCategory
+                  ? "Редактировать категорию"
+                  : "Добавить категорию"}
+              </h2>
+              <button
+                className={styles.modalClose}
+                onClick={() => setOpen(false)}
+              >
+                <CloseIcon />
+              </button>
+            </div>
             <CategoryForm
               category={editingCategory || undefined}
               categories={categories}
@@ -183,32 +244,13 @@ const CategoryList: React.FC<CategoryListProps> = ({
         </div>
       )}
 
-      {deletingCategory && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <h2>Подтверждение удаления</h2>
-            <p>
-              Вы уверены, что хотите удалить категорию "{deletingCategory.name}
-              "?
-            </p>
-            <div className={styles.modalActions}>
-              <button
-                className={styles.cancelButton}
-                onClick={() => setDeletingCategory(null)}
-              >
-                Отмена
-              </button>
-              <button
-                className={styles.confirmButton}
-                onClick={handleConfirmDelete}
-              >
-                <DeleteIcon fontSize="small" className={styles.buttonIcon} />
-                Удалить
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteModal
+        isOpen={!!deletingCategory}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Подтверждение удаления"
+        categoryName={deletingCategory?.name || ""}
+      />
     </div>
   );
 };
