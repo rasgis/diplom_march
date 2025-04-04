@@ -336,3 +336,23 @@
   color: rgba(212, 255, 234, 0.7);
   text-align: center;
 }
+
+.refreshButton {
+  background: transparent;
+  border: none;
+  color: rgba(212, 255, 234, 0.7);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 50%;
+  display: inline-block;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.refreshButton:hover {
+  color: #0be0b8;
+  transform: rotate(180deg);
+}

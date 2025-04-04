@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 import styles from "./WeatherWidget.module.css";
 
-const STORAGE_KEY = "weather_city";
+const STORAGE_KEY = "weather_city_key";
 const DEFAULT_CITY = "Владикавказ";
 
 export const WeatherWidget = () => {
@@ -45,6 +45,8 @@ export const WeatherWidget = () => {
   const fetchWeather = (city: string) => {
     setLoading(true);
     setError("");
+    console.log("Запрашиваю погоду для города:", city);
+
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=df89244c7d25e01ef07fc0f9f1715a8d`
     )
@@ -53,14 +55,21 @@ export const WeatherWidget = () => {
         return response.json();
       })
       .then(({ name, main, weather, wind }) => {
-        setWeather({
+        const weatherData = {
           temperature: Math.round(main.temp),
           condition: weather[0].description,
           humidity: main.humidity,
           windSpeed: Math.round(wind.speed),
           city: name,
-        });
+        };
+
+        setWeather(weatherData);
+        console.log("Получены данные о погоде:", weatherData);
+
+        // Сохраняем выбранный город в localStorage
         localStorage.setItem(STORAGE_KEY, name);
+        console.log("Сохранен город в localStorage:", name);
+
         setIsModalOpen(false);
         setNewCity("");
         setIsVisible(true);
@@ -73,8 +82,21 @@ export const WeatherWidget = () => {
   };
 
   useEffect(() => {
-    const savedCity = localStorage.getItem(STORAGE_KEY) || DEFAULT_CITY;
-    fetchWeather(savedCity);
+    // Очищаем старые ключи, которые могли остаться в localStorage
+    localStorage.removeItem("weather_city");
+
+    // Добавляем логирование для отладки
+    const savedCity = localStorage.getItem(STORAGE_KEY);
+    console.log("Сохраненный город из localStorage:", savedCity);
+
+    // Если нет сохраненного города, устанавливаем Владикавказ и сохраняем его
+    if (!savedCity) {
+      localStorage.setItem(STORAGE_KEY, DEFAULT_CITY);
+      console.log("Установлен город по умолчанию:", DEFAULT_CITY);
+    }
+
+    // Используем сохраненный город или Владикавказ
+    fetchWeather(savedCity || DEFAULT_CITY);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -96,6 +118,13 @@ export const WeatherWidget = () => {
     }, 100);
   };
 
+  // Добавляем кнопку обновления погоды для текущего города
+  const refreshWeather = () => {
+    const currentCity = localStorage.getItem(STORAGE_KEY) || DEFAULT_CITY;
+    console.log("Принудительное обновление погоды для города:", currentCity);
+    fetchWeather(currentCity);
+  };
+
   if (loading) return null;
 
   return (
@@ -107,6 +136,13 @@ export const WeatherWidget = () => {
           }`}
           style={{ cursor: "pointer" }}
         >
+          <button
+            className={styles.refreshButton}
+            onClick={refreshWeather}
+            title="Обновить данные"
+          >
+            ↻
+          </button>
           <div className={styles.location}>
             <h2>{weather.city}</h2>
           </div>
@@ -168,6 +204,18 @@ export const WeatherWidget = () => {
                     setIsModalOpen(false);
                     setNewCity("");
                     setError("");
+                    // Если была ошибка, проверяем сохраненный город
+                    if (error) {
+                      const savedCity = localStorage.getItem(STORAGE_KEY);
+                      if (savedCity) {
+                        console.log(
+                          "Возврат к сохраненному городу:",
+                          savedCity
+                        );
+                        // Если поиск был с ошибкой, возвращаемся к прежнему городу
+                        fetchWeather(savedCity);
+                      }
+                    }
                   }}
                 >
                   Отмена
