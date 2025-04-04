@@ -1,17 +1,37 @@
-import React from "react";
-import { useAppSelector } from "../../hooks";
+import React, { useState, useEffect } from "react";
+import { useAppSelector, useAppDispatch } from "../../hooks";
+import { clearCart } from "../../reducers/cartSlice";
+import CartItem from "../../components/CartItem/CartItem";
+import DeleteConfirmationModal from "../../components/DeleteConfirmationModal/DeleteConfirmationModal";
 import styles from "./Cart.module.css";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { scrollToTop } from "../../utils/scroll";
 
 const Cart: React.FC = () => {
+  const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
+  const total = useAppSelector((state) => state.cart.total);
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
+
+  useEffect(() => {
+    // Плавный скролл вверх при переходе на страницу
+    scrollToTop();
+  }, []);
+
+  const handleClearCart = () => {
+    dispatch(clearCart());
+    setIsClearModalOpen(false);
+  };
 
   return (
-    <div className="pageContainer">
-      <div className="pageContent">
+    <div className={styles.container}>
+      <div className={styles.content}>
         <div className={styles.cart}>
-          <h2>Корзина</h2>
+          <h1 className={styles.title}>Корзина</h1>
           {cartItems.length === 0 ? (
             <div className={styles.emptyCart}>
+              <ShoppingCartIcon className={styles.emptyIcon} />
               <h2>Корзина пуста</h2>
               <p>Добавьте товары в корзину, чтобы оформить заказ</p>
             </div>
@@ -19,39 +39,22 @@ const Cart: React.FC = () => {
             <>
               <div className={styles.cartItems}>
                 {cartItems.map((item) => (
-                  <div key={item.id} className={styles.cartItem}>
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className={styles.itemImage}
-                    />
-                    <div className={styles.itemInfo}>
-                      <h3>{item.name}</h3>
-                      <p className={styles.category}>{item.category}</p>
-                      <p className={styles.price}>{item.price} ₽</p>
-                    </div>
-                    <div className={styles.quantity}>
-                      <button className={styles.quantityButton}>-</button>
-                      <span>{item.quantity}</span>
-                      <button className={styles.quantityButton}>+</button>
-                    </div>
-                    <button className={styles.removeButton}>Удалить</button>
-                  </div>
+                  <CartItem key={item.id} item={item} />
                 ))}
               </div>
               <div className={styles.cartSummary}>
                 <div className={styles.total}>
                   <span>Итого:</span>
-                  <span>
-                    {cartItems.reduce(
-                      (sum, item) => sum + item.price * item.quantity,
-                      0
-                    )}{" "}
-                    ₽
-                  </span>
+                  <span className={styles.totalAmount}>{total} ₽</span>
                 </div>
                 <div className={styles.actions}>
-                  <button className={styles.clearButton}>Очистить</button>
+                  <button
+                    className={styles.clearButton}
+                    onClick={() => setIsClearModalOpen(true)}
+                  >
+                    <DeleteIcon />
+                    Очистить корзину
+                  </button>
                   <button className={styles.checkoutButton}>
                     Оформить заказ
                   </button>
@@ -61,6 +64,15 @@ const Cart: React.FC = () => {
           )}
         </div>
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={isClearModalOpen}
+        onClose={() => setIsClearModalOpen(false)}
+        onConfirm={handleClearCart}
+        title="Подтверждение очистки"
+        itemName="все товары из корзины"
+        itemType="корзину"
+      />
     </div>
   );
 };

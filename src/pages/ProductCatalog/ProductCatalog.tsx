@@ -6,6 +6,7 @@ import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
 import Loader from "../../components/Loader";
 import { categoryService } from "../../services/categoryService";
 import styles from "./ProductCatalog.module.css";
+import { scrollToTop } from "../../utils/scroll";
 
 const ProductCatalog: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +18,7 @@ const ProductCatalog: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchCategories());
+    scrollToTop();
   }, [dispatch]);
 
   if (categoriesLoading) {

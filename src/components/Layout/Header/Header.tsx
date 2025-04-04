@@ -10,6 +10,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import CategoryIcon from "@mui/icons-material/Category";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { scrollToTop } from "../../../utils/scroll";
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +21,10 @@ const Header: React.FC = () => {
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate(ROUTES.HOME);
+  };
+
+  const handleAllProductsClick = () => {
+    scrollToTop();
   };
 
   return (
@@ -40,7 +45,11 @@ const Header: React.FC = () => {
               <CategoryIcon className={styles.navIcon} />
               Каталог
             </Link>
-            <Link to={ROUTES.ALL_PRODUCTS} className={styles.navLink}>
+            <Link
+              to={ROUTES.ALL_PRODUCTS}
+              className={styles.navLink}
+              onClick={handleAllProductsClick}
+            >
               <ShoppingBagIcon className={styles.navIcon} />
               Все товары
             </Link>

@@ -7,6 +7,7 @@ import { addToCart } from "../../reducers/cartSlice";
 import { Button, Snackbar, Alert } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import styles from "./ProductCard.module.css";
+import { scrollToTop } from "../../utils/scroll";
 
 interface ProductCardProps {
   product: Product;
@@ -37,11 +38,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
     setOpenSnackbar(false);
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Предотвращаем перекрытие события клика на кнопку
+    if ((e.target as Element).closest(`.${styles.cartButton}`)) {
+      e.preventDefault();
+      return;
+    }
+    scrollToTop();
+  };
+
   return (
     <>
       <Link
         to={ROUTES.PRODUCT_DETAIL.replace(":id", product.id)}
         className={styles.cardLink}
+        onClick={handleCardClick}
       >
         <div className={styles.card}>
           <div className={styles.imageContainer}>

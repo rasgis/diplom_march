@@ -329,3 +329,10 @@
     font-size: 1.5rem;
   }
 }
+
+.currentCity {
+  margin: 10px 0;
+  font-size: 0.9rem;
+  color: rgba(212, 255, 234, 0.7);
+  text-align: center;
+}

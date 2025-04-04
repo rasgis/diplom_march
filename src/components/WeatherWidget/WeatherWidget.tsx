@@ -9,6 +9,7 @@ import {
 import styles from "./WeatherWidget.module.css";
 
 const STORAGE_KEY = "weather_city";
+const DEFAULT_CITY = "Владикавказ";
 
 export const WeatherWidget = () => {
   const [weather, setWeather] = useState({
@@ -24,6 +25,7 @@ export const WeatherWidget = () => {
   const [error, setError] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const getWeatherIcon = (condition: string) => {
     const conditionLower = condition.toLowerCase();
@@ -71,8 +73,8 @@ export const WeatherWidget = () => {
   };
 
   useEffect(() => {
-    const savedCity = localStorage.getItem(STORAGE_KEY);
-    fetchWeather(savedCity || "Vladikavkaz");
+    const savedCity = localStorage.getItem(STORAGE_KEY) || DEFAULT_CITY;
+    fetchWeather(savedCity);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -80,6 +82,18 @@ export const WeatherWidget = () => {
     if (newCity.trim()) {
       fetchWeather(newCity.trim());
     }
+  };
+
+  const handleOpenModal = () => {
+    setNewCity(weather.city);
+    setIsModalOpen(true);
+
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.select();
+      }
+    }, 100);
   };
 
   if (loading) return null;
@@ -118,7 +132,7 @@ export const WeatherWidget = () => {
         className={styles.toggleButton}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() => setIsModalOpen(true)}
+        onClick={handleOpenModal}
       >
         {getWeatherIcon(weather.condition)}
       </button>
@@ -130,8 +144,12 @@ export const WeatherWidget = () => {
         >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <h3>Введите название города</h3>
+            <p className={styles.currentCity}>
+              Текущий город: <strong>{weather.city}</strong>
+            </p>
             <form onSubmit={handleSubmit}>
               <input
+                ref={inputRef}
                 type="text"
                 value={newCity}
                 onChange={(e) => setNewCity(e.target.value)}

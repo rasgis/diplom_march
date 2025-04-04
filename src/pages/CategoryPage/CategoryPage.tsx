@@ -18,6 +18,9 @@ import { ROUTES } from "../../constants/routes";
 import { Category, Product } from "../../types";
 import { categoryService } from "../../services/categoryService";
 import styles from "./CategoryPage.module.css";
+import HomeIcon from "@mui/icons-material/Home";
+import CategoryIcon from "@mui/icons-material/Category";
+import { scrollToTop } from "../../utils/scroll";
 
 const CategoryPage: React.FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
@@ -38,6 +41,9 @@ const CategoryPage: React.FC = () => {
     if (categoryId) {
       dispatch(fetchCategories());
       dispatch(fetchProducts());
+
+      // Плавный скролл вверх при переходе на новую страницу
+      scrollToTop();
     }
   }, [dispatch, categoryId]);
 
@@ -66,7 +72,20 @@ const CategoryPage: React.FC = () => {
   if (!currentCategory) {
     return (
       <Container className={styles.container}>
-        <Typography>Категория не найдена</Typography>
+        <div className={styles.content}>
+          <div className={styles.emptyMessage}>
+            <CategoryIcon style={{ fontSize: 48, marginBottom: "1rem" }} />
+            <Typography variant="h5">Категория не найдена</Typography>
+            <MuiLink
+              component={Link}
+              to={ROUTES.CATALOG}
+              className={styles.returnLink}
+              onClick={scrollToTop}
+            >
+              Вернуться в каталог
+            </MuiLink>
+          </div>
+        </div>
       </Container>
     );
   }
@@ -91,13 +110,26 @@ const CategoryPage: React.FC = () => {
     <Container className={styles.container}>
       <Box className={styles.content}>
         <Breadcrumbs aria-label="breadcrumb" className={styles.breadcrumbs}>
-          <MuiLink component={Link} to={ROUTES.CATALOG} color="inherit">
+          <MuiLink
+            component={Link}
+            to={ROUTES.HOME}
+            className={styles.breadcrumbLink}
+          >
+            <HomeIcon style={{ marginRight: "4px", fontSize: 18 }} />
+            Главная
+          </MuiLink>
+          <MuiLink
+            component={Link}
+            to={ROUTES.CATALOG}
+            className={styles.breadcrumbLink}
+          >
+            <CategoryIcon style={{ marginRight: "4px", fontSize: 18 }} />
             Каталог
           </MuiLink>
           {categoryPath.map((category, index) => {
             const isLast = index === categoryPath.length - 1;
             return isLast ? (
-              <Typography key={category.id} color="text.primary">
+              <Typography key={category.id} className={styles.breadcrumbActive}>
                 {category.name}
               </Typography>
             ) : (
@@ -105,7 +137,7 @@ const CategoryPage: React.FC = () => {
                 key={category.id}
                 component={Link}
                 to={`${ROUTES.CATEGORY.replace(":categoryId", category.id)}`}
-                color="inherit"
+                className={styles.breadcrumbLink}
               >
                 {category.name}
               </MuiLink>
@@ -113,26 +145,15 @@ const CategoryPage: React.FC = () => {
           })}
         </Breadcrumbs>
 
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          className={styles.title}
-        >
+        <Typography variant="h4" component="h1" className={styles.title}>
           {currentCategory.name}
         </Typography>
 
         {subcategories.length > 0 && (
           <Box className={styles.section}>
-            <Typography
-              variant="h5"
-              component="h2"
-              gutterBottom
-              className={styles.sectionTitle}
-            >
-              Подкатегории
-            </Typography>
-            <CategoryGrid categories={subcategories} />
+            <div className={styles.subcategoriesContainer}>
+              <CategoryGrid categories={subcategories} />
+            </div>
           </Box>
         )}
 
@@ -141,28 +162,43 @@ const CategoryPage: React.FC = () => {
             <Typography
               variant="h5"
               component="h2"
-              gutterBottom
               className={styles.sectionTitle}
             >
               Товары в категории
             </Typography>
-            <Grid container spacing={3} className={styles.productGrid}>
+            <div className={styles.productGrid}>
               {categoryProducts.map((product: Product) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+                <div key={product.id} className={styles.productGridItem}>
                   <ProductCard
                     product={product}
                     isAuthenticated={isAuthenticated}
                   />
-                </Grid>
+                </div>
               ))}
-            </Grid>
+            </div>
           </Box>
         )}
 
         {subcategories.length === 0 && categoryProducts.length === 0 && (
-          <Typography className={styles.emptyMessage}>
-            В данной категории нет подкатегорий и товаров
-          </Typography>
+          <div className={styles.emptyMessage}>
+            <CategoryIcon style={{ fontSize: 48, marginBottom: "1rem" }} />
+            <Typography variant="h5">
+              Товары в этой категории временно отсутствуют
+            </Typography>
+            <Typography variant="body1" className={styles.emptySubtext}>
+              Пожалуйста, загляните позже или выберите другую категорию
+            </Typography>
+            <div style={{ marginTop: "2rem" }}>
+              <MuiLink
+                component={Link}
+                to={ROUTES.CATALOG}
+                className={styles.returnLink}
+                onClick={scrollToTop}
+              >
+                Вернуться в каталог
+              </MuiLink>
+            </div>
+          </div>
         )}
       </Box>
     </Container>

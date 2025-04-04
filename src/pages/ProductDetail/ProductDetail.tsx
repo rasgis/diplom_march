@@ -18,6 +18,7 @@ import {
 import { ROUTES } from "../../constants/routes";
 import { categoryService } from "../../services/categoryService";
 import styles from "./ProductDetail.module.css";
+import { scrollToTop } from "../../utils/scroll";
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -40,6 +41,9 @@ const ProductDetail: React.FC = () => {
       dispatch(fetchProductById(id));
     }
     dispatch(fetchCategories());
+
+    // Плавный скролл вверх при переходе на страницу
+    scrollToTop();
   }, [dispatch, id]);
 
   const handleAddToCart = () => {

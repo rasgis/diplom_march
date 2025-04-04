@@ -6,6 +6,7 @@ import ProductCard from "../../components/ProductCard/ProductCard";
 import SearchBar from "../../components/SearchBar";
 import Loader from "../../components/Loader";
 import styles from "./AllProducts.module.css";
+import { scrollToTop } from "../../utils/scroll";
 
 const AllProducts: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +22,8 @@ const AllProducts: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchProducts());
+    // Плавный скролл вверх при переходе на страницу
+    scrollToTop();
   }, [dispatch]);
 
   useEffect(() => {

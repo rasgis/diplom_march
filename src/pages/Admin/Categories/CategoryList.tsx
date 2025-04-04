@@ -8,54 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import CloseIcon from "@mui/icons-material/Close";
-import WarningIcon from "@mui/icons-material/Warning";
-
-interface DeleteModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  categoryName: string;
-}
-
-const DeleteModal = ({
-  isOpen,
-  onClose,
-  onConfirm,
-  title,
-  categoryName,
-}: DeleteModalProps) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className={styles.modal}>
-      <div className={styles.modalContent}>
-        <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>
-            <WarningIcon className={styles.buttonIcon} />
-            {title}
-          </h2>
-          <button className={styles.modalClose} onClick={onClose}>
-            <CloseIcon />
-          </button>
-        </div>
-        <div className={styles.modalBody}>
-          <p>Вы уверены, что хотите удалить категорию "{categoryName}"?</p>
-          <p>Это действие нельзя будет отменить.</p>
-        </div>
-        <div className={styles.modalFooter}>
-          <button className={styles.modalCancelButton} onClick={onClose}>
-            Отмена
-          </button>
-          <button className={styles.modalConfirmButton} onClick={onConfirm}>
-            <DeleteIcon className={styles.buttonIcon} />
-            Удалить
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import DeleteConfirmationModal from "../../../components/DeleteConfirmationModal/DeleteConfirmationModal";
 
 interface CategoryListProps {
   categories: Category[];
@@ -244,12 +197,13 @@ const CategoryList: React.FC<CategoryListProps> = ({
         </div>
       )}
 
-      <DeleteModal
+      <DeleteConfirmationModal
         isOpen={!!deletingCategory}
         onClose={handleCancelDelete}
         onConfirm={handleConfirmDelete}
         title="Подтверждение удаления"
-        categoryName={deletingCategory?.name || ""}
+        itemName={deletingCategory?.name || ""}
+        itemType="категорию"
       />
     </div>
   );

@@ -1,0 +1,145 @@
+.cartItem {
+  display: grid;
+  grid-template-columns: 120px 1fr auto auto;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(
+    135deg,
+    rgba(29, 30, 36, 0.7) 0%,
+    rgba(42, 43, 50, 0.7) 100%
+  );
+  border-radius: 12px;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  transition: all 0.3s ease;
+}
+
+.cartItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(11, 224, 184, 0.15);
+  border-color: rgba(11, 224, 184, 0.4);
+}
+
+.imageContainer {
+  width: 120px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.image:hover {
+  transform: scale(1.05);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #d4ffea;
+  margin: 0;
+}
+
+.category {
+  font-size: 0.9rem;
+  color: rgba(212, 255, 234, 0.7);
+  margin: 0;
+}
+
+.price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0be0b8;
+  margin: 0;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(29, 30, 36, 0.5);
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.quantityButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11, 224, 184, 0.1);
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  border-radius: 6px;
+  color: #0be0b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quantityButton:hover {
+  background: rgba(11, 224, 184, 0.2);
+  border-color: #0be0b8;
+  transform: translateY(-1px);
+}
+
+.quantityValue {
+  min-width: 24px;
+  text-align: center;
+  color: #d4ffea;
+  font-weight: 500;
+}
+
+.removeButton {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 71, 87, 0.1);
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  border-radius: 8px;
+  color: #ff4757;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.removeButton:hover {
+  background: rgba(255, 71, 87, 0.2);
+  border-color: #ff4757;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .cartItem {
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+  }
+
+  .imageContainer {
+    width: 100px;
+    height: 100px;
+  }
+
+  .quantity {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .removeButton {
+    grid-column: 2;
+    justify-self: end;
+  }
+}
