@@ -1,0 +1,750 @@
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(63, 81, 181, 0.2);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+@keyframes shine {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulsePercent {
+  0% {
+    transform: rotate(15deg) scale(1);
+    color: rgba(63, 81, 181, 0.3);
+  }
+  50% {
+    transform: rotate(15deg) scale(1.1);
+    color: rgba(63, 81, 181, 0.8);
+  }
+  100% {
+    transform: rotate(15deg) scale(1);
+    color: rgba(63, 81, 181, 0.3);
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  font-family: "Roboto", sans-serif;
+}
+
+.hero {
+  width: 100%;
+  text-align: center;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: #1d1e24;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: -1;
+}
+
+.logoContainer {
+  margin-bottom: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.logo {
+  max-width: 300px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 3rem;
+  color: #d4ffea;
+
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  color: #d4ffea;
+
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 400;
+}
+
+.ctaButton {
+  display: inline-block;
+  padding: 1rem 2rem;
+  background-color: #0be0b8;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.ctaButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: all 0.5s;
+}
+
+.ctaButton:hover {
+  background-color: #0be0b8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.ctaButton:hover::before {
+  left: 100%;
+}
+
+.features {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 32px rgba(11, 224, 184, 0.15);
+  border-radius: 12px;
+}
+
+.features::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(11, 224, 184, 0.1),
+    rgba(29, 30, 36, 0.1)
+  );
+  border-radius: 12px;
+  z-index: -1;
+}
+
+.feature {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 300px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.feature::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(11, 224, 184, 0.1),
+    transparent 70%
+  );
+  z-index: -1;
+}
+
+.feature::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(11, 224, 184, 0.1) 50%,
+    transparent 100%
+  );
+  animation: shine 8s infinite;
+  z-index: -1;
+}
+
+.feature:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(11, 224, 184, 0.2);
+  border-color: rgba(11, 224, 184, 0.4);
+}
+
+.feature h3 {
+  color: #0be0b8;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.feature p {
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  text-align: center;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+}
+
+.about {
+  width: 100%;
+  padding: 4rem 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0bbc9c, #0a9e84);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(11, 188, 156, 0.3);
+  transform-origin: center;
+  will-change: transform;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+.about::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.2),
+    transparent 70%
+  );
+  z-index: 0;
+  border-radius: 12px;
+}
+
+.about::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  z-index: 0;
+}
+
+.about h2 {
+  color: white;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  transform-origin: center;
+  will-change: transform;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
+}
+
+.about p {
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.9;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 400;
+  font-size: 1.1rem;
+}
+
+.contact {
+  width: 100%;
+  padding: 4rem 0;
+  text-align: center;
+  background-color: #1d1e24;
+  border-radius: 8px;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+}
+
+.contact::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: -1;
+}
+
+.contact h2 {
+  color: white;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.formGroup label {
+  color: white;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: #0be0b8;
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 0 0 2px rgba(11, 224, 184, 0.3);
+}
+
+.formGroup input::placeholder,
+.formGroup textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.submitButton {
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #0be0b8;
+  color: #1d1e24;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: center;
+}
+
+.submitButton:hover {
+  background-color: #0a9e84;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.successMessage {
+  background-color: rgba(11, 224, 184, 0.1);
+  border: 1px solid rgba(11, 224, 184, 0.3);
+  border-radius: 4px;
+  padding: 1.5rem;
+  color: white;
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.successMessage p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.discountBanner {
+  width: 100%;
+  padding: 2rem;
+  margin: 2rem 0;
+  background: #0bbc9c;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(90, 29, 231, 0.2);
+  transition: all 0.3s ease;
+  transform-origin: center;
+  will-change: transform;
+  border: 1px solid rgba(11, 188, 156, 0.3);
+}
+
+.discountBanner:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(11, 210, 224, 0.3);
+}
+
+.discountBanner::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(13, 224, 214, 0.5);
+  z-index: -1;
+  border-radius: 8px;
+}
+
+.discountBanner::after {
+  content: "5%";
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  font-size: 120px;
+  font-weight: 900;
+  color: rgba(11, 188, 156, 0.2);
+  z-index: -1;
+  animation: pulsePercent 3s ease-in-out infinite;
+  will-change: transform, color;
+}
+
+.discountTitle {
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: float 3s ease-in-out infinite;
+  transform-origin: center;
+  will-change: transform;
+  min-height: 2.5rem;
+}
+
+.discountText {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+  line-height: 1.6;
+  min-height: 3.2rem;
+  font-weight: 400;
+}
+
+.discountButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  background: white;
+  color: #0bbc9c;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-height: 3.5rem;
+  min-width: 300px;
+}
+
+.discountButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(11, 188, 156, 0.2),
+    transparent
+  );
+  transition: all 0.5s;
+}
+
+.discountButton:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.discountButton:hover::before {
+  left: 100%;
+}
+
+.discountIcon {
+  font-size: 1.8rem;
+  margin-right: 0.8rem;
+  vertical-align: middle;
+  color: #3f51b5;
+}
+
+.discountFeatures {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  min-height: 3rem;
+}
+
+.discountFeature {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  min-height: 2.5rem;
+  min-width: 200px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.discountFeature:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.discountFeatureIcon {
+  color: white;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.discountFeature span {
+  font-weight: 500;
+  color: white;
+  font-size: 1rem;
+}
+
+/* Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  .feature {
+    max-width: 100%;
+  }
+
+  .logo {
+    max-width: 200px;
+  }
+
+  .discountTitle {
+    font-size: 1.6rem;
+    min-height: 2rem;
+  }
+
+  .discountText {
+    font-size: 1.1rem;
+    min-height: 2.8rem;
+  }
+
+  .discountButton {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    min-height: 3rem;
+    min-width: 250px;
+  }
+
+  .discountIcon {
+    font-size: 1.5rem;
+  }
+
+  .discountBanner::after {
+    font-size: 80px;
+  }
+
+  .discountFeatures {
+    gap: 1rem;
+    min-height: 2.5rem;
+  }
+
+  .discountFeature {
+    padding: 0.4rem 0.8rem;
+    min-height: 2rem;
+    min-width: 150px;
+  }
+
+  .discountFeatureIcon {
+    font-size: 1rem;
+  }
+
+  .discountFeature span {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .discountTitle {
+    font-size: 1.4rem;
+    min-height: 1.8rem;
+  }
+
+  .discountText {
+    font-size: 1rem;
+    min-height: 2.5rem;
+  }
+
+  .discountButton {
+    padding: 0.7rem 1.2rem;
+    font-size: 1rem;
+    min-height: 2.5rem;
+    min-width: 200px;
+  }
+
+  .discountFeatures {
+    gap: 0.8rem;
+    min-height: 2rem;
+  }
+
+  .discountFeature {
+    padding: 0.3rem 0.6rem;
+    min-height: 1.8rem;
+    min-width: 120px;
+  }
+}

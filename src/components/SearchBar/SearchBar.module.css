@@ -1,0 +1,21 @@
+.searchContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 2rem;
+}
+
+.searchField {
+  width: 100%;
+}
+
+.searchIcon {
+  color: #666;
+}
+
+/* Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+  .searchContainer {
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+}
