@@ -14,7 +14,10 @@
 
 .formGroup label {
   font-weight: 500;
-  color: #333;
+  color: rgba(212, 255, 234, 0.9);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  display: block;
 }
 
 .input,

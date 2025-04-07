@@ -48,8 +48,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex: 0.8;
-  min-width: 0;
+  flex: 0 0 auto;
   overflow: hidden;
   height: 100%;
 }
@@ -57,8 +56,8 @@
 .rightSection {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  flex: 1;
+  gap: 0.75rem;
+  flex: 1 1 auto;
   justify-content: flex-end;
   min-width: 0;
   overflow: hidden;
@@ -87,8 +86,6 @@
   color: #0be0b8;
 }
 
-.nav,
-.adminNav,
 .authLinks {
   display: flex;
   align-items: center;
@@ -99,9 +96,22 @@
   -ms-overflow-style: none;
 }
 
-.nav::-webkit-scrollbar,
-.adminNav::-webkit-scrollbar,
 .authLinks::-webkit-scrollbar {
+  display: none;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex: 0 1 auto;
+}
+
+.nav::-webkit-scrollbar {
   display: none;
 }
 
@@ -117,7 +127,7 @@
   text-decoration: none;
   color: #0be0b8;
   font-weight: 500;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-radius: 4px;
   transition: color 0.2s;
   white-space: nowrap;
@@ -147,15 +157,14 @@
 .adminNav {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
   flex-wrap: nowrap;
   overflow-x: auto;
-  max-width: 100%;
-  padding: 0.25rem;
-  margin: 0;
-  margin-left: -2rem;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  padding: 0.25rem;
+  margin: 0;
+  flex: 0 0 auto;
 }
 
 .adminNav::-webkit-scrollbar {
@@ -169,7 +178,7 @@
   color: #9f5bdf;
   text-decoration: none;
   font-weight: 500;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-radius: 4px;
   background-color: transparent;
   transition: all 0.2s;
@@ -217,7 +226,7 @@
   text-decoration: none;
   color: #0bb999;
   font-weight: 500;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-radius: 4px;
   transition: color 0.2s;
   white-space: nowrap;
@@ -252,8 +261,8 @@
 .userInfo {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 8px 16px;
+  gap: 0.5rem;
+  padding: 8px 12px;
   border-radius: 4px;
   background-color: transparent;
   color: #0bb999;
@@ -292,7 +301,7 @@
   border: none;
   color: #0bb999;
   cursor: pointer;
-  padding: 8px 16px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
   transition: color 0.2s;
@@ -321,18 +330,11 @@
   width: 80%;
 }
 
-.authLinks {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
 .authLink {
   color: #0bb999;
   text-decoration: none;
   font-weight: 500;
-  padding: 8px 16px;
+  padding: 8px 12px;
   border-radius: 4px;
   transition: all 0.2s;
   white-space: nowrap;
@@ -374,6 +376,48 @@
   background-color: #0be0b8;
 }
 
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: #0be0b8;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.mobileMenuButton:hover {
+  background-color: rgba(11, 224, 184, 0.1);
+}
+
+.mobileMenuButton svg {
+  font-size: 24px;
+}
+
+/* Новый блок для мобильных действий */
+.mobileActions {
+  display: none; /* Скрыт по умолчанию */
+  align-items: center;
+  gap: 0.5rem; /* Уменьшенный отступ */
+}
+
+/* Стили для корзины и авторизации на десктопе */
+.cartDesktop,
+.authDesktop {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.cartDesktop {
+  /* Можно добавить специфичные стили для десктопной корзины, если нужно */
+}
+
+.authDesktop {
+  /* Можно добавить специфичные стили для десктопной авторизации, если нужно */
+}
+
 @media (max-width: 1165px) and (min-width: 769px) {
   .container {
     padding: 0.75rem;
@@ -395,7 +439,7 @@
     padding: 0.15rem;
     gap: 0.25rem;
     margin-right: 1rem;
-    margin-left: -2rem;
+    margin-left: 0;
   }
 
   .adminLink {
@@ -439,7 +483,7 @@
   .adminNav {
     max-width: 180px;
     margin-right: 1rem;
-    margin-left: -2rem;
+    margin-left: 0;
   }
 
   .adminLink {
@@ -449,28 +493,97 @@
 }
 
 @media (max-width: 768px) {
+  .header {
+    height: auto;
+    min-height: 72px;
+  }
+
   .container {
-    flex-wrap: wrap;
+    flex-direction: column;
+    padding: 0.5rem;
     gap: 0.5rem;
+    height: auto;
   }
 
   .leftSection {
-    flex: 1 1 auto;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+
+  /* Показываем мобильные действия */
+  .mobileActions {
+    display: flex;
+  }
+
+  /* Стили для элементов внутри mobileActions */
+  .mobileActions .cartLink,
+  .mobileActions .authLink,
+  .mobileActions .logoutButton {
+    padding: 0.5rem; /* Уменьшенные паддинги */
+    font-size: 0.85rem;
+  }
+
+  .mobileActions .cartIcon,
+  .mobileActions .userIcon {
+    font-size: 1rem; /* Уменьшенные иконки */
+  }
+
+  .mobileActions .userInfo {
+    padding: 0.4rem 0.6rem;
+    gap: 0.4rem;
+    display: flex; /* Убедимся, что flex применяется */
+    align-items: center;
+  }
+
+  .mobileActions .userName {
+    font-size: 0.8rem; /* Уменьшенный текст */
+    display: inline; /* Имя пользователя должно отображаться */
+    margin-left: 0.3rem; /* Небольшой отступ слева */
+    white-space: nowrap; /* Предотвращаем перенос имени */
+    overflow: hidden; /* Скрываем то, что не помещается */
+    text-overflow: ellipsis; /* Добавляем многоточие */
+    max-width: 80px; /* Ограничиваем максимальную ширину */
+  }
+
+  .mobileActions .logoutButton svg {
+    font-size: 0.9rem;
+  }
+
+  .mobileMenuButton {
+    display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 0.5rem;
   }
 
   .rightSection {
-    flex: 1 1 auto;
-    justify-content: center;
-    gap: 0.5rem;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 0.5rem;
+    flex-wrap: wrap;
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+    background: rgba(32, 32, 38, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-top: 0.5rem;
+    animation: slideDown 0.3s ease-out;
   }
 
-  .nav,
-  .adminNav,
-  .authLinks {
-    flex-wrap: nowrap;
-    overflow-x: auto;
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .mobileMenuOpen {
+    display: flex;
   }
 
   .logo {
@@ -483,89 +596,159 @@
   }
 
   .nav {
-    gap: 1rem;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
   }
 
   .navIcon {
     font-size: 18px;
+    width: 24px;
+    text-align: center;
   }
 
   .navLink {
-    padding: 4px 8px;
-    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  .navLink:hover {
+    background-color: rgba(11, 224, 184, 0.1);
   }
 
   .adminNav {
-    padding: 0.15rem;
-    gap: 0.25rem;
-    margin-right: 1rem;
-    margin-left: -2rem;
+    width: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 0;
+    padding: 0.5rem;
+    gap: 0.5rem;
+    border-top: 1px solid rgba(11, 224, 184, 0.1);
+    border-bottom: 1px solid rgba(11, 224, 184, 0.1);
   }
 
   .adminLink {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.85rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  .adminLink:hover {
+    background-color: rgba(159, 91, 223, 0.1);
   }
 
   .adminLink svg {
-    font-size: 16px;
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+  }
+
+  .cart {
+    margin: 0;
+    width: auto; /* Убираем width 100% из общих стилей .cart */
+    padding: 0; /* Убираем padding из общих стилей .cart */
   }
 
   .cartLink {
-    padding: 4px 8px;
-    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  .cartLink:hover {
+    background-color: rgba(11, 224, 184, 0.1);
   }
 
   .cartIcon {
-    font-size: 16px;
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+  }
+
+  .auth {
+    width: auto; /* Убираем width 100% из общих стилей .auth */
+    justify-content: flex-start;
+    padding: 0; /* Убираем padding из общих стилей .auth */
   }
 
   .userInfo {
-    padding: 0.3rem 0.6rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 6px;
+    background-color: rgba(11, 224, 184, 0.05);
   }
 
   .userName {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .authLinks {
+    width: 100%;
+    justify-content: flex-start;
     gap: 0.5rem;
   }
 
   .authLink {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.9rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    width: 100%;
+    text-align: left;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  .authLink:hover {
+    background-color: rgba(11, 224, 184, 0.1);
+  }
+
+  /* Скрываем десктопные версии корзины и авторизации */
+  .cartDesktop,
+  .authDesktop {
+    display: none;
   }
 }
 
 @media (max-width: 480px) {
   .container {
-    padding: 0.5rem;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    padding: 0.25rem;
   }
 
   .leftSection {
-    gap: 0.5rem;
-    flex: 1 1 100%;
-    justify-content: center;
+    padding: 0.25rem 0;
   }
 
   .rightSection {
-    gap: 0.5rem;
-    flex: 1 1 100%;
-    justify-content: center;
+    padding: 0.25rem 0;
   }
 
-  .adminNav {
-    padding: 0.1rem;
-    gap: 0.2rem;
-    margin-right: 0.5rem;
-    margin-left: -1rem;
+  .logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .logoText {
+    font-size: 1rem;
+  }
+
+  .navLink {
+    padding: 3px 6px;
+    font-size: 0.8rem;
   }
 
   .adminLink {
-    padding: 0.25rem 0.4rem;
+    padding: 3px 6px;
     font-size: 0.8rem;
   }
 
@@ -573,38 +756,30 @@
     font-size: 14px;
   }
 
-  .auth {
-    flex: 1 1 auto;
-  }
-
-  .authLinks {
-    gap: 0.25rem;
-  }
-
-  .authLink {
-    padding: 0.25rem 0.5rem;
+  .cartLink {
+    padding: 3px 6px;
     font-size: 0.8rem;
   }
 
+  .cartIcon {
+    font-size: 14px;
+  }
+
   .userInfo {
-    padding: 0.25rem 0.5rem;
+    padding: 3px 6px;
   }
 
   .userName {
     font-size: 0.8rem;
   }
 
-  .navLink {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-  }
-
-  .cartLink {
-    padding: 0.25rem 0.5rem;
+  .authLink {
+    padding: 3px 6px;
     font-size: 0.8rem;
   }
 }
 
+/* Комментируем или удаляем этот блок, т.к. он ломает верстку выше 768px
 @media (max-width: 1045px) {
   .container {
     flex-direction: column;
@@ -645,11 +820,12 @@
   }
 
   .adminNav {
-    margin-right: 1rem;
-    margin-left: -2rem;
+    margin-left: 0;
   }
 }
+*/
 
+/* Комментируем или удаляем этот блок, т.к. он ломает верстку выше 768px
 @media (max-width: 1170px) {
   .container {
     flex-direction: column;
@@ -690,7 +866,19 @@
   }
 
   .adminNav {
-    margin-right: 1rem;
-    margin-left: -2rem;
+    margin-left: 0;
+  }
+}
+*/
+
+/* Дополнительные настройки для очень маленьких экранов */
+@media (max-width: 400px) {
+  .mobileActions .userName {
+    display: inline; /* Убедимся, что имя все еще отображается */
+    max-width: 50px; /* Еще уменьшаем максимальную ширину */
+  }
+  .mobileActions .authLink {
+    padding: 0.4rem;
+    font-size: 0.75rem;
   }
 }

@@ -1,15 +1,71 @@
 .searchContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto 2rem;
+  max-width: 500px; /* Ограничим максимальную ширину */
+  margin: 0 auto; /* Центрируем контейнер */
 }
 
-.searchField {
-  width: 100%;
+.searchInput {
+  flex-grow: 1; /* Поле ввода занимает основное место */
+  padding: 10px 40px 10px 35px; /* Отступы: сверху/снизу, справа (под кнопку), слева (под иконку) */
+  font-size: 1rem;
+  color: #d4ffea;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(11, 224, 184, 0.3);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  outline: none; /* Убираем стандартный контур */
+  box-sizing: border-box; /* Учитываем padding и border в размере */
+  width: 100%; /* Занимает всю ширину контейнера */
+  margin-bottom: 1rem;
+}
+
+.searchInput::placeholder {
+  color: rgba(212, 255, 234, 0.5);
+  opacity: 1;
+}
+
+.searchInput:hover {
+  border-color: rgba(11, 224, 184, 0.7);
+}
+
+.searchInput:focus {
+  border-color: #0be0b8;
+  box-shadow: 0 0 0 2px rgba(11, 224, 184, 0.2);
+  background-color: rgba(255, 255, 255, 0.08);
 }
 
 .searchIcon {
-  color: #666;
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(212, 255, 234, 0.7);
+  font-size: 1rem; /* Уменьшим размер иконки */
+  pointer-events: none; /* Иконка не мешает кликам */
+}
+
+.clearButton {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(212, 255, 234, 0.7);
+  cursor: pointer;
+  padding: 4px; /* Небольшой паддинг для удобства клика */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem; /* Размер иконки крестика */
+  transition: color 0.2s ease;
+}
+
+.clearButton:hover {
+  color: #d4ffea;
 }
 
 /* Медиа-запросы для мобильных устройств */

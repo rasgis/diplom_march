@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TextField, InputAdornment, IconButton } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import ClearIcon from "@mui/icons-material/Clear";
+import { FaSearch, FaTimes } from "react-icons/fa";
 import styles from "./SearchBar.module.css";
 
 interface SearchBarProps {
@@ -16,11 +14,9 @@ const SearchBar: React.FC<SearchBarProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Добавляем небольшую задержку для предотвращения частых вызовов при вводе
     const timer = setTimeout(() => {
       onSearch(searchQuery);
     }, 300);
-
     return () => clearTimeout(timer);
   }, [searchQuery, onSearch]);
 
@@ -30,32 +26,30 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
   const handleClear = () => {
     setSearchQuery("");
+    onSearch("");
   };
 
   return (
     <div className={styles.searchContainer}>
-      <TextField
-        fullWidth
-        variant="outlined"
+      <FaSearch className={styles.searchIcon} />
+      <input
+        type="text"
+        className={styles.searchInput}
         placeholder={placeholder}
         value={searchQuery}
         onChange={handleChange}
-        className={styles.searchField}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon className={styles.searchIcon} />
-            </InputAdornment>
-          ),
-          endAdornment: searchQuery && (
-            <InputAdornment position="end">
-              <IconButton onClick={handleClear} edge="end" size="small">
-                <ClearIcon />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
+        aria-label={placeholder}
       />
+      {searchQuery && (
+        <button
+          type="button"
+          onClick={handleClear}
+          className={styles.clearButton}
+          aria-label="Очистить поиск"
+        >
+          <FaTimes />
+        </button>
+      )}
     </div>
   );
 };

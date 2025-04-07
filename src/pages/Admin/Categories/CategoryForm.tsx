@@ -13,6 +13,37 @@ interface CategoryFormProps {
   onCancel: () => void;
 }
 
+// Компонент для рекурсивного отображения категорий
+const CategoryOption: React.FC<{
+  category: Category;
+  level: number;
+  currentCategoryId?: string;
+}> = ({ category, level, currentCategoryId }) => {
+  // Пропускаем текущую категорию и её подкатегории при редактировании
+  if (currentCategoryId && category.id === currentCategoryId) {
+    return null;
+  }
+
+  const prefix = "\u00A0".repeat(level * 4);
+  return (
+    <>
+      <option value={category.id}>
+        {prefix}
+        {level > 0 ? "— " : ""}
+        {category.name}
+      </option>
+      {category.children?.map((child) => (
+        <CategoryOption
+          key={child.id}
+          category={child}
+          level={level + 1}
+          currentCategoryId={currentCategoryId}
+        />
+      ))}
+    </>
+  );
+};
+
 const CategoryForm: React.FC<CategoryFormProps> = ({
   category,
   categories,
@@ -76,10 +107,29 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   };
 
   // Фильтруем категории, чтобы исключить текущую категорию и её подкатегории
-  const availableParentCategories = categories.filter((c) => {
-    if (category && c.id === category.id) return false;
-    return true;
-  });
+  const buildCategoryTree = (categories: Category[]): Category[] => {
+    const categoryMap = new Map<string, Category>();
+    categories.forEach((category) => {
+      categoryMap.set(category.id, { ...category, children: [] });
+    });
+
+    const rootCategories: Category[] = [];
+    categories.forEach((category) => {
+      if (category.parentId) {
+        const parent = categoryMap.get(category.parentId);
+        if (parent) {
+          parent.children = parent.children || [];
+          parent.children.push(categoryMap.get(category.id)!);
+        }
+      } else {
+        rootCategories.push(categoryMap.get(category.id)!);
+      }
+    });
+
+    return rootCategories;
+  };
+
+  const categoryTree = buildCategoryTree(categories);
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
@@ -104,10 +154,13 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
           className={styles.select}
         >
           <option value="">Нет</option>
-          {availableParentCategories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
+          {categoryTree.map((cat) => (
+            <CategoryOption
+              key={cat.id}
+              category={cat}
+              level={0}
+              currentCategoryId={category?.id}
+            />
           ))}
         </select>
       </div>

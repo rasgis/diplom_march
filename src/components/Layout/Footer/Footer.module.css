@@ -101,7 +101,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(212, 255, 234, 0.8);
 }
 
 .socialLinks {
@@ -111,14 +111,15 @@
 }
 
 .socialLink {
-  color: white;
+  color: rgba(212, 255, 234, 0.8);
+
   font-size: 1.5rem;
   transition: all 0.3s ease;
 }
 
 .socialLink:hover {
   transform: translateY(-3px);
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(11, 185, 153, 0.8);
 }
 
 .copyright {
@@ -128,6 +129,35 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
+}
+
+.servicesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.serviceItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+  padding: 0.5rem;
+}
+
+.serviceItem:hover {
+  color: c;
+}
+
+.serviceItem svg {
+  color: #0be0b8;
+  flex-shrink: 0;
+}
+
+.serviceItem span {
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 
 @media (max-width: 768px) {

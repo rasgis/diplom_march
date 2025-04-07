@@ -19,7 +19,6 @@ const Home: React.FC = () => {
 
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
     phone: "",
     message: "",
   });
@@ -42,7 +41,6 @@ const Home: React.FC = () => {
     setIsSubmitted(true);
     setFormData({
       name: "",
-      email: "",
       phone: "",
       message: "",
     });
@@ -116,9 +114,9 @@ const Home: React.FC = () => {
       <section className={styles.about}>
         <h2>О нашем магазине</h2>
         <p>
-          Мы рады приветствовать вас в Stroy City! Наша компания уже более 10
-          лет предоставляет качественные строительные материалы нашим клиентам.
-          Мы гордимся тем, что можем предложить вам широкий выбор продукции по
+          Мы рады приветствовать вас в Stroy City! Наш магазин уже более 10 лет
+          предоставляет качественные строительные материалы нашим клиентам. Мы
+          гордимся тем, что можем предложить вам широкий выбор продукции по
           конкурентным ценам.
         </p>
         <p>
@@ -150,17 +148,6 @@ const Home: React.FC = () => {
               />
             </div>
             <div className={styles.formGroup}>
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles.formGroup}>
               <label htmlFor="phone">Телефон</label>
               <input
                 type="tel"
@@ -178,12 +165,12 @@ const Home: React.FC = () => {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                required
                 rows={4}
+                placeholder="Введите ваше сообщение"
               ></textarea>
             </div>
             <button type="submit" className={styles.submitButton}>
-              Отправить
+              ОТПРАВИТЬ
             </button>
           </form>
         )}
