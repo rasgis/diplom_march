@@ -1,15 +1,18 @@
-// Определяем базовый URL в зависимости от окружения
+// Функция для определения базового URL в зависимости от окружения
 const getBaseUrl = () => {
-  // В режиме production API и клиент находятся на одном домене
+  // В production режиме используем относительные пути
   if (import.meta.env.PROD) {
     return "";
   }
-  // В режиме разработки используем localhost
+  // В режиме разработки используем локальный сервер
   return "http://localhost:3001";
 };
 
 export const API_CONFIG = {
   BASE_URL: getBaseUrl(),
+  HEADERS: {
+    "Content-Type": "application/json",
+  },
   ENDPOINTS: {
     AUTH: {
       LOGIN: "/api/auth/login",
@@ -18,7 +21,7 @@ export const API_CONFIG = {
     },
     USERS: {
       BASE: "/api/users",
-      BY_ID: (id: string) => `/api/users/${id}`,
+      PROFILE: "/api/users/profile",
     },
     PRODUCTS: {
       BASE: "/api/products",
@@ -31,9 +34,10 @@ export const API_CONFIG = {
     FILES: {
       UPLOAD: "/api/upload",
     },
-  },
-  HEADERS: {
-    "Content-Type": "application/json",
+    CART: {
+      BASE: "/api/cart",
+      BY_ID: (id: string) => `/api/cart/${id}`,
+    },
   },
 };
 
