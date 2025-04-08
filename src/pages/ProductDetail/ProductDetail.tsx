@@ -4,17 +4,6 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchProductById } from "../../reducers/productSlice";
 import { fetchCategories } from "../../reducers/categorySlice";
 import { addToCart } from "../../reducers/cartSlice";
-import {
-  Container,
-  Typography,
-  Box,
-  Grid,
-  Breadcrumbs,
-  Link as MuiLink,
-  Button,
-  Snackbar,
-  Alert,
-} from "@mui/material";
 import { ROUTES } from "../../constants/routes";
 import { categoryService } from "../../services/categoryService";
 import styles from "./ProductDetail.module.css";
@@ -41,8 +30,6 @@ const ProductDetail: React.FC = () => {
       dispatch(fetchProductById(id));
     }
     dispatch(fetchCategories());
-
-    // Плавный скролл вверх при переходе на страницу
     scrollToTop();
   }, [dispatch, id]);
 
@@ -59,118 +46,96 @@ const ProductDetail: React.FC = () => {
 
   if (productLoading || categoriesLoading) {
     return (
-      <Container>
-        <Typography>Загрузка...</Typography>
-      </Container>
+      <div className={styles.container}>
+        <div className={styles.loading}>Загрузка...</div>
+      </div>
     );
   }
 
   if (productError || categoriesError) {
     return (
-      <Container>
-        <Typography color="error">{productError || categoriesError}</Typography>
-      </Container>
+      <div className={styles.container}>
+        <div className={styles.error}>{productError || categoriesError}</div>
+      </div>
     );
   }
 
   if (!product) {
     return (
-      <Container>
-        <Typography>Товар не найден</Typography>
-      </Container>
+      <div className={styles.container}>
+        <div className={styles.notFound}>Товар не найден</div>
+      </div>
     );
   }
 
-  // Получаем категорию товара
-  const productCategory = categories.find(
-    (category) => category._id === product.categoryId
-  );
-
-  // Получаем полный путь категории
   const categoryPath = categoryService.getCategoryPath(
     categories,
-    product.categoryId
+    typeof product.category === "string"
+      ? product.category
+      : product.category._id
   );
 
   return (
-    <Container>
-      <Box sx={{ my: 4 }}>
-        <Breadcrumbs aria-label="breadcrumb" sx={{ mb: 2 }}>
-          <MuiLink component={Link} to={ROUTES.CATALOG} color="inherit">
-            Каталог
-          </MuiLink>
+    <div className={styles.container}>
+      <div className={styles.product}>
+        <div className={styles.breadcrumbs}>
+          <Link to={ROUTES.CATALOG}>Каталог</Link>
           {categoryPath.map((category, index) => {
             const isLast = index === categoryPath.length - 1;
             return isLast ? (
-              <Typography key={category._id} color="text.primary">
-                {category.name}
-              </Typography>
+              <span key={category._id}>{category.name}</span>
             ) : (
-              <MuiLink
+              <Link
                 key={category._id}
-                component={Link}
                 to={`${ROUTES.CATEGORY.replace(":categoryId", category._id)}`}
-                color="inherit"
               >
                 {category.name}
-              </MuiLink>
+              </Link>
             );
           })}
-          <Typography color="text.primary">{product.name}</Typography>
-        </Breadcrumbs>
+          <span>{product.name}</span>
+        </div>
 
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6}>
+        <div className={styles.content}>
+          <div className={styles.imageContainer}>
             <img
               src={product.image}
               alt={product.name}
               className={styles.image}
             />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Box className={styles.info}>
-              <Typography variant="h4" className={styles.title}>
-                {product.name}
-              </Typography>
-              <Typography className={styles.description}>
-                {product.description}
-              </Typography>
-              <Typography className={styles.price}>
-                {product.price} ₽ / {product.unitOfMeasure}
-              </Typography>
-              <Typography className={styles.category}>
-                Категория: {productCategory?.name || "Неизвестная категория"}
-              </Typography>
-              {isAuthenticated && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  onClick={handleAddToCart}
-                  sx={{ mt: 2 }}
-                >
-                  Добавить в корзину
-                </Button>
-              )}
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          Товар добавлен в корзину
-        </Alert>
-      </Snackbar>
-    </Container>
+          </div>
+          <div className={styles.info}>
+            <h1 className={styles.title}>{product.name}</h1>
+            <p className={styles.description}>{product.description}</p>
+            <div className={styles.price}>
+              {product.price} ₽ / {product.unitOfMeasure}
+            </div>
+            {isAuthenticated && (
+              <button
+                className={styles.addToCartButton}
+                onClick={handleAddToCart}
+              >
+                Добавить в корзину
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {openSnackbar && (
+        <div className={styles.snackbar}>
+          <div className={styles.snackbarContent}>
+            Товар добавлен в корзину
+            <button
+              className={styles.closeButton}
+              onClick={handleCloseSnackbar}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

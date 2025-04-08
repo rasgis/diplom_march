@@ -24,8 +24,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
   // Получаем название категории
   const categoryName =
-    categories.find((cat) => cat.id === product.categoryId)?.name ||
-    "Неизвестная категория";
+    typeof product.category === "string"
+      ? categories.find((cat) => cat._id === product.category)?.name ||
+        "Неизвестная категория"
+      : product.category.name || "Неизвестная категория";
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Предотвращаем переход по ссылке

@@ -9,47 +9,47 @@
     rgba(29, 30, 36, 0.8) 0%,
     rgba(42, 43, 50, 0.8) 100%
   );
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(11, 224, 184, 0.15);
-  border: 1px solid rgba(11, 224, 184, 0.2);
+  box-shadow: 0 4px 16px rgba(11, 224, 184, 0.1);
+  border: 1px solid rgba(11, 224, 184, 0.15);
   animation: fadeIn 0.5s ease forwards;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgba(11, 224, 184, 0.25);
-  border-color: rgba(11, 224, 184, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(11, 224, 184, 0.2);
+  border-color: rgba(11, 224, 184, 0.3);
 }
 
 .imageContainer {
   position: relative;
   width: 100%;
-  padding-top: 100%;
+  padding-top: 80%;
   overflow: hidden;
   background-color: rgba(29, 30, 36, 0.8);
 }
 
 .image {
   position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  right: 0.5rem;
-  bottom: 0.5rem;
-  width: calc(100% - 1rem);
-  height: calc(100% - 1rem);
+  top: 0.4rem;
+  left: 0.4rem;
+  right: 0.4rem;
+  bottom: 0.4rem;
+  width: calc(100% - 0.8rem);
+  height: calc(100% - 0.8rem);
   object-fit: cover;
   transition: transform 0.5s ease;
   will-change: transform;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .card:hover .image {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 .content {
-  padding: 1.5rem;
+  padding: 1.2rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
@@ -61,9 +61,9 @@
 }
 
 .title {
-  margin: 0 0 0.8rem 0 !important;
+  margin: 0 0 0.6rem 0 !important;
   font-weight: 600 !important;
-  font-size: 1.2rem !important;
+  font-size: 1.1rem !important;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -73,24 +73,25 @@
 }
 
 .description {
-  color: rgba(212, 255, 234, 0.8);
-  margin: 0 0 1rem 0 !important;
+  color: rgba(212, 255, 234, 0.7);
+  margin: 0 0 0.8rem 0 !important;
   flex-grow: 1;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .category {
   color: #d4ffea;
-  font-size: 0.875rem;
-  margin: 0 0 0.8rem 0 !important;
-  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  margin: 0 0 0.6rem 0 !important;
+  padding: 0.3rem 0.6rem;
   background: rgba(11, 224, 184, 0.1);
-  border-radius: 8px;
+  border-radius: 6px;
   display: inline-block;
   border: 1px solid rgba(11, 224, 184, 0.2);
   transition: all 0.3s ease;
@@ -104,8 +105,8 @@
 .price {
   font-weight: 700 !important;
   color: #0be0b8;
-  margin: 0 0 1.2rem 0 !important;
-  font-size: 1.3rem !important;
+  margin: 0 0 0.8rem 0 !important;
+  font-size: 1.2rem !important;
 }
 
 .stock {
@@ -130,20 +131,20 @@
 .cartButton {
   width: 100%;
   text-transform: none !important;
-  font-size: 1rem !important;
-  padding: 0.8rem 1.2rem !important;
-  border-radius: 8px !important;
+  font-size: 0.9rem !important;
+  padding: 0.6rem 1rem !important;
+  border-radius: 6px !important;
   background: linear-gradient(135deg, #0be0b8 0%, #00d4b8 100%) !important;
   color: #1d1e24 !important;
   font-weight: 600 !important;
   transition: all 0.3s ease !important;
-  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.3) !important;
+  box-shadow: 0 2px 8px rgba(11, 224, 184, 0.2) !important;
 }
 
 .cartButton:hover {
   background: linear-gradient(135deg, #00d4b8 0%, #0be0b8 100%) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 16px rgba(11, 224, 184, 0.4) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.3) !important;
 }
 
 .cardLink {
@@ -157,7 +158,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -171,22 +172,22 @@
   }
 
   .title {
-    font-size: 1.1rem !important;
-    margin-bottom: 0.5rem !important;
+    font-size: 1rem !important;
+    margin-bottom: 0.4rem !important;
   }
 
   .description {
-    font-size: 0.875rem;
-    margin-bottom: 0.8rem !important;
+    font-size: 0.8rem;
+    margin-bottom: 0.6rem !important;
   }
 
   .price {
-    font-size: 1.2rem !important;
-    margin-bottom: 1rem !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 0.6rem !important;
   }
 
   .cartButton {
-    padding: 0.6rem 1rem !important;
-    font-size: 0.9rem !important;
+    padding: 0.5rem 0.8rem !important;
+    font-size: 0.85rem !important;
   }
 }
