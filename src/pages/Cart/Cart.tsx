@@ -39,7 +39,7 @@ const Cart: React.FC = () => {
             <>
               <div className={styles.cartItems}>
                 {cartItems.map((item) => (
-                  <CartItem key={item.id} item={item} />
+                  <CartItem key={item._id} item={item} />
                 ))}
               </div>
               <div className={styles.cartSummary}>

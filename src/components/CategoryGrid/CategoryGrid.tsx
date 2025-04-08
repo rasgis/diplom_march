@@ -12,7 +12,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({ categories }) => {
     <div className={styles.gridContainer}>
       <div className={styles.categoryGrid}>
         {categories.map((category) => (
-          <div key={category.id} className={styles.gridItem}>
+          <div key={category._id} className={styles.gridItem}>
             <CategoryCard category={category} />
           </div>
         ))}

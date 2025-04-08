@@ -1,30 +1,67 @@
 import React, { useRef, useState } from "react";
 import styles from "./ImageUpload.module.css";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { optimizeImage } from "../../utils/imageUtils";
 
 interface ImageUploadProps {
   onImageSelect: (file: File) => void;
   currentImage?: string;
+  maxWidth?: number;
+  maxHeight?: number;
+  quality?: number;
 }
 
 const ImageUpload: React.FC<ImageUploadProps> = ({
   onImageSelect,
   currentImage,
+  maxWidth = 1200,
+  maxHeight = 1200,
+  quality = 0.7,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(currentImage || null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
-      onImageSelect(file);
+      setLoading(true);
 
-      // Создаем превью изображения
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        // Оптимизируем изображение перед отправкой
+        const optimizedFile = await optimizeImage(
+          file,
+          maxWidth,
+          maxHeight,
+          quality
+        );
+
+        // Отправляем оптимизированный файл
+        onImageSelect(optimizedFile);
+
+        // Создаем превью изображения
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreview(reader.result as string);
+          setLoading(false);
+        };
+        reader.readAsDataURL(optimizedFile);
+      } catch (error) {
+        console.error("Ошибка при оптимизации изображения:", error);
+
+        // В случае ошибки используем оригинальный файл
+        onImageSelect(file);
+
+        // Создаем превью оригинального изображения
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setPreview(reader.result as string);
+          setLoading(false);
+        };
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -43,7 +80,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         hidden
       />
       <div className={styles.preview} onClick={handleClick}>
-        {preview ? (
+        {loading ? (
+          <div className={styles.loading}>
+            <span>Обработка изображения...</span>
+          </div>
+        ) : preview ? (
           <img src={preview} alt="Preview" className={styles.image} />
         ) : (
           <div className={styles.placeholder}>

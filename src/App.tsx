@@ -26,6 +26,7 @@ import CategoryListContainer from "./pages/Admin/Categories";
 import Cart from "./pages/Cart/Cart";
 import AdminProducts from "./pages/Admin/Products/Products";
 import AdminCategories from "./pages/Admin/Categories/Categories";
+import AdminUsers from "./pages/Admin/Users/Users";
 
 const PrivateRoute: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -86,6 +87,14 @@ const App: React.FC = () => {
               element={
                 <AdminRoute>
                   <CategoryListContainer />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path={ROUTES.ADMIN.USERS + "/*"}
+              element={
+                <AdminRoute>
+                  <AdminUsers />
                 </AdminRoute>
               }
             />

@@ -9,7 +9,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 interface CategoryFormProps {
   category?: Category;
   categories: Category[];
-  onSubmit: (data: Omit<Category, "id" | "createdAt" | "updatedAt">) => void;
+  parentId?: string;
+  onSubmit: (
+    data: Omit<Category, "_id" | "slug" | "order" | "createdAt" | "updatedAt">
+  ) => void;
   onCancel: () => void;
 }
 
@@ -20,21 +23,21 @@ const CategoryOption: React.FC<{
   currentCategoryId?: string;
 }> = ({ category, level, currentCategoryId }) => {
   // Пропускаем текущую категорию и её подкатегории при редактировании
-  if (currentCategoryId && category.id === currentCategoryId) {
+  if (currentCategoryId && category._id === currentCategoryId) {
     return null;
   }
 
   const prefix = "\u00A0".repeat(level * 4);
   return (
     <>
-      <option value={category.id}>
+      <option value={category._id}>
         {prefix}
         {level > 0 ? "— " : ""}
         {category.name}
       </option>
       {category.children?.map((child) => (
         <CategoryOption
-          key={child.id}
+          key={`option-${child._id}`}
           category={child}
           level={level + 1}
           currentCategoryId={currentCategoryId}
@@ -47,11 +50,14 @@ const CategoryOption: React.FC<{
 const CategoryForm: React.FC<CategoryFormProps> = ({
   category,
   categories,
+  parentId,
   onSubmit,
   onCancel,
 }) => {
   const [name, setName] = useState("");
-  const [parentId, setParentId] = useState<string | undefined>(undefined);
+  const [selectedParentId, setSelectedParentId] = useState<string | undefined>(
+    parentId
+  );
   const [image, setImage] = useState<File | null>(null);
   const [imagePath, setImagePath] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +66,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   useEffect(() => {
     if (category) {
       setName(category.name);
-      setParentId(category.parentId);
+      setSelectedParentId(category.parentId);
       setImagePath(category.image || undefined);
     }
   }, [category]);
@@ -74,9 +80,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
       let finalImagePath = imagePath || "";
 
       if (image) {
-        console.log("Uploading image:", image);
         finalImagePath = await fileService.saveImage(image);
-        console.log("Image uploaded successfully:", finalImagePath);
       }
 
       const categoryData = {
@@ -84,10 +88,9 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         image: finalImagePath,
         slug: name.toLowerCase().replace(/\s+/g, "-"),
         order: category?.order || 0,
-        parentId: parentId || undefined,
+        parentId: selectedParentId || undefined,
       };
 
-      console.log("Submitting category data:", categoryData);
       onSubmit(categoryData);
     } catch (error) {
       console.error("Error saving category:", error);
@@ -102,7 +105,6 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   };
 
   const handleImageSelect = (file: File) => {
-    console.log("Image selected:", file);
     setImage(file);
   };
 
@@ -110,19 +112,21 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   const buildCategoryTree = (categories: Category[]): Category[] => {
     const categoryMap = new Map<string, Category>();
     categories.forEach((category) => {
-      categoryMap.set(category.id, { ...category, children: [] });
+      if (category._id) {
+        categoryMap.set(category._id, { ...category, children: [] });
+      }
     });
 
     const rootCategories: Category[] = [];
     categories.forEach((category) => {
       if (category.parentId) {
         const parent = categoryMap.get(category.parentId);
-        if (parent) {
+        if (parent && category._id) {
           parent.children = parent.children || [];
-          parent.children.push(categoryMap.get(category.id)!);
+          parent.children.push(categoryMap.get(category._id)!);
         }
-      } else {
-        rootCategories.push(categoryMap.get(category.id)!);
+      } else if (category._id) {
+        rootCategories.push(categoryMap.get(category._id)!);
       }
     });
 
@@ -149,17 +153,17 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         <label htmlFor="parentId">Родительская категория</label>
         <select
           id="parentId"
-          value={parentId || ""}
-          onChange={(e) => setParentId(e.target.value || undefined)}
+          value={selectedParentId || ""}
+          onChange={(e) => setSelectedParentId(e.target.value || undefined)}
           className={styles.select}
         >
           <option value="">Нет</option>
           {categoryTree.map((cat) => (
             <CategoryOption
-              key={cat.id}
+              key={`option-root-${cat._id}`}
               category={cat}
               level={0}
-              currentCategoryId={category?.id}
+              currentCategoryId={category?._id}
             />
           ))}
         </select>
@@ -169,7 +173,10 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
         <label>Изображение</label>
         <ImageUpload
           onImageSelect={handleImageSelect}
-          currentImage={imagePath}
+          currentImage={category?.image}
+          maxWidth={600}
+          maxHeight={600}
+          quality={0.75}
         />
       </div>
 

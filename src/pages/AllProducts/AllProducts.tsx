@@ -97,7 +97,7 @@ const AllProducts: React.FC = () => {
         ) : (
           <Grid container spacing={3} className={styles.productGrid}>
             {currentProducts.map((product) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+              <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
                 <ProductCard
                   product={product}
                   isAuthenticated={isAuthenticated}

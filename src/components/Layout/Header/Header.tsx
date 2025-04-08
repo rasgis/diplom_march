@@ -65,10 +65,10 @@ const Header: React.FC = () => {
             >
               <img
                 src="/logo-stroy.jpg"
-                alt="StroyMasters Logo"
+                alt="StroyCity Logo"
                 className={styles.logo}
               />
-              <span className={styles.logoText}>StroyMasters</span>
+              <span className={styles.logoText}>StroyCity</span>
             </Link>
             <div className={styles.mobileActions}>
               {isAuthenticated && (

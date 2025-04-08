@@ -13,8 +13,9 @@ import { CATEGORIES } from "../../../constants/categories";
 import styles from "./Admin.module.css";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { Product, Category } from "../../../types";
+import { Product, ProductFormData, Category } from "../../../types";
 import ImageUpload from "../../../components/ImageUpload/ImageUpload";
+import { categoryService } from "../../../services/categoryService";
 
 // Добавляем список единиц измерения
 const UNITS_OF_MEASURE = [
@@ -34,9 +35,7 @@ const UNITS_OF_MEASURE = [
 interface ProductFormProps {
   product?: Product;
   categories: Category[];
-  onSubmit: (
-    values: Omit<Product, "id" | "createdAt" | "updatedAt">
-  ) => Promise<void>;
+  onSubmit: (values: ProductFormData) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -47,12 +46,12 @@ const buildCategoryTree = (categories: Category[]): Category[] => {
 
   // Создаем Map для быстрого доступа к категориям
   categories.forEach((category) => {
-    categoryMap.set(category.id, { ...category, children: [] });
+    categoryMap.set(category._id, { ...category, children: [] });
   });
 
   // Строим дерево
   categories.forEach((category) => {
-    const currentCategory = categoryMap.get(category.id);
+    const currentCategory = categoryMap.get(category._id);
     if (currentCategory) {
       if (category.parentId) {
         const parentCategory = categoryMap.get(category.parentId);
@@ -79,12 +78,12 @@ const CategoryOption: React.FC<{ category: Category; level: number }> = ({
   const prefix = "\u00A0".repeat(level * 4);
   return (
     <>
-      <option value={category.id}>
+      <option value={category._id}>
         {prefix}
         {category.name}
       </option>
       {category.children?.map((child) => (
-        <CategoryOption key={child.id} category={child} level={level + 1} />
+        <CategoryOption key={child._id} category={child} level={level + 1} />
       ))}
     </>
   );
@@ -110,6 +109,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   const [imagePreview, setImagePreview] = useState<string | null>(
     product?.image || null
   );
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Название обязательно"),
@@ -117,25 +117,43 @@ const ProductForm: React.FC<ProductFormProps> = ({
     price: Yup.number()
       .required("Цена обязательна")
       .min(0, "Цена не может быть отрицательной"),
-    categoryId: Yup.string().required("Категория обязательна"),
-    image: Yup.string().required("Изображение обязательно"),
+    category: Yup.string().required("Категория обязательна"),
+    image: Yup.mixed().required("Изображение обязательно"),
     unitOfMeasure: Yup.string().required("Единица измерения обязательна"),
   });
 
-  const formik = useFormik({
+  const formik = useFormik<ProductFormData>({
     initialValues: {
       name: product?.name || "",
       description: product?.description || "",
       price: product?.price || 0,
-      categoryId: product?.categoryId || "",
+      category: getProductCategoryId(product),
       image: product?.image || "",
       unitOfMeasure: product?.unitOfMeasure || "",
     },
     validationSchema,
     onSubmit: async (values) => {
-      await onSubmit(values);
+      // Создаем новый объект с File вместо base64 строки
+      const submitData = {
+        ...values,
+        image: selectedFile || values.image,
+      };
+      await onSubmit(submitData);
     },
   });
+
+  // Функция для получения ID категории из продукта
+  function getProductCategoryId(product?: Product) {
+    if (!product) return "";
+
+    // Если category - объект, извлекаем _id
+    if (typeof product.category === "object" && product.category !== null) {
+      return (product.category as { _id: string })._id;
+    }
+
+    // Иначе возвращаем как есть (строка)
+    return product.category || "";
+  }
 
   useEffect(() => {
     if (isEdit && id) {
@@ -144,16 +162,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
   }, [dispatch, isEdit, id]);
 
   const handleImageSelect = (file: File) => {
+    setSelectedFile(file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setImagePreview(reader.result as string);
-      formik.setFieldValue("image", reader.result);
+      formik.setFieldValue("image", file);
     };
     reader.readAsDataURL(file);
   };
 
-  // Построение дерева категорий
-  const categoryTree = buildCategoryTree(categories);
+  // Получаем категории в виде плоского списка с уровнями вложенности
+  const flatCategories = categoryService.getAllCategoriesFlat(categories);
 
   if (loading) {
     return <div className={styles.loading}>Загрузка...</div>;
@@ -218,25 +237,33 @@ const ProductForm: React.FC<ProductFormProps> = ({
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="categoryId">Категория</label>
+        <label htmlFor="category">Категория</label>
         <select
-          id="categoryId"
-          name="categoryId"
+          id="category"
+          name="category"
           onChange={formik.handleChange}
-          value={formik.values.categoryId}
+          value={formik.values.category as string}
           className={
-            formik.touched.categoryId && formik.errors.categoryId
+            formik.touched.category && formik.errors.category
               ? styles.error
               : ""
           }
         >
           <option value="">Выберите категорию</option>
-          {categoryTree.map((category) => (
-            <CategoryOption key={category.id} category={category} level={0} />
+          {flatCategories.map((cat) => (
+            <option
+              key={cat.id}
+              value={cat.id}
+              style={{ paddingLeft: `${cat.level * 20}px` }}
+            >
+              {"\u00A0".repeat(cat.level * 2)}
+              {cat.isParent ? "📁 " : "📄 "}
+              {cat.name}
+            </option>
           ))}
         </select>
-        {formik.touched.categoryId && formik.errors.categoryId && (
-          <div className={styles.errorMessage}>{formik.errors.categoryId}</div>
+        {formik.touched.category && formik.errors.category && (
+          <div className={styles.errorMessage}>{formik.errors.category}</div>
         )}
       </div>
 

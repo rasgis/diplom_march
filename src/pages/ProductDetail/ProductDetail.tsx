@@ -83,7 +83,7 @@ const ProductDetail: React.FC = () => {
 
   // Получаем категорию товара
   const productCategory = categories.find(
-    (category) => category.id === product.categoryId
+    (category) => category._id === product.categoryId
   );
 
   // Получаем полный путь категории
@@ -102,14 +102,14 @@ const ProductDetail: React.FC = () => {
           {categoryPath.map((category, index) => {
             const isLast = index === categoryPath.length - 1;
             return isLast ? (
-              <Typography key={category.id} color="text.primary">
+              <Typography key={category._id} color="text.primary">
                 {category.name}
               </Typography>
             ) : (
               <MuiLink
-                key={category.id}
+                key={category._id}
                 component={Link}
-                to={`${ROUTES.CATEGORY.replace(":categoryId", category.id)}`}
+                to={`${ROUTES.CATEGORY.replace(":categoryId", category._id)}`}
                 color="inherit"
               >
                 {category.name}

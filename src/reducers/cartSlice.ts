@@ -43,7 +43,7 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action: PayloadAction<CartItem>) => {
       const existingItem = state.items.find(
-        (item) => item.id === action.payload.id
+        (item) => item._id === action.payload._id
       );
       if (existingItem) {
         existingItem.quantity += action.payload.quantity;
@@ -57,7 +57,7 @@ const cartSlice = createSlice({
       saveCartToStorage(state);
     },
     removeFromCart: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter((item) => item.id !== action.payload);
+      state.items = state.items.filter((item) => item._id !== action.payload);
       state.total = state.items.reduce(
         (sum, item) => sum + item.price * item.quantity,
         0
@@ -66,9 +66,9 @@ const cartSlice = createSlice({
     },
     updateQuantity: (
       state,
-      action: PayloadAction<{ id: string; quantity: number }>
+      action: PayloadAction<{ _id: string; quantity: number }>
     ) => {
-      const item = state.items.find((item) => item.id === action.payload.id);
+      const item = state.items.find((item) => item._id === action.payload._id);
       if (item) {
         item.quantity = action.payload.quantity;
         state.total = state.items.reduce(

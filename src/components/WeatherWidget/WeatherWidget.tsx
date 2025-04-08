@@ -45,7 +45,6 @@ export const WeatherWidget = () => {
   const fetchWeather = (city: string) => {
     setLoading(true);
     setError("");
-    console.log("Запрашиваю погоду для города:", city);
 
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&lang=ru&appid=df89244c7d25e01ef07fc0f9f1715a8d`
@@ -64,11 +63,9 @@ export const WeatherWidget = () => {
         };
 
         setWeather(weatherData);
-        console.log("Получены данные о погоде:", weatherData);
 
         // Сохраняем выбранный город в localStorage
         localStorage.setItem(STORAGE_KEY, name);
-        console.log("Сохранен город в localStorage:", name);
 
         setIsModalOpen(false);
         setNewCity("");
@@ -76,7 +73,6 @@ export const WeatherWidget = () => {
       })
       .catch((error) => {
         setError(error.message);
-        console.error("Ошибка при получении данных о погоде:", error);
       })
       .finally(() => setLoading(false));
   };
@@ -87,12 +83,10 @@ export const WeatherWidget = () => {
 
     // Добавляем логирование для отладки
     const savedCity = localStorage.getItem(STORAGE_KEY);
-    console.log("Сохраненный город из localStorage:", savedCity);
 
     // Если нет сохраненного города, устанавливаем Владикавказ и сохраняем его
     if (!savedCity) {
       localStorage.setItem(STORAGE_KEY, DEFAULT_CITY);
-      console.log("Установлен город по умолчанию:", DEFAULT_CITY);
     }
 
     // Используем сохраненный город или Владикавказ
@@ -121,7 +115,6 @@ export const WeatherWidget = () => {
   // Добавляем кнопку обновления погоды для текущего города
   const refreshWeather = () => {
     const currentCity = localStorage.getItem(STORAGE_KEY) || DEFAULT_CITY;
-    console.log("Принудительное обновление погоды для города:", currentCity);
     fetchWeather(currentCity);
   };
 
@@ -208,10 +201,6 @@ export const WeatherWidget = () => {
                     if (error) {
                       const savedCity = localStorage.getItem(STORAGE_KEY);
                       if (savedCity) {
-                        console.log(
-                          "Возврат к сохраненному городу:",
-                          savedCity
-                        );
                         // Если поиск был с ошибкой, возвращаемся к прежнему городу
                         fetchWeather(savedCity);
                       }

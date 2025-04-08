@@ -1,32 +1,39 @@
 import axios from "axios";
-
-const SERVER_URL = "http://localhost:3001";
+import { API_CONFIG } from "../config/api";
+import { authService } from "./authService";
+import { optimizeImage } from "../utils/imageUtils";
 
 export const fileService = {
   async saveImage(file: File): Promise<string> {
     try {
-      // Проверяем доступность сервера
-      try {
-        const response = await axios.get(SERVER_URL);
-        console.log("Server is available:", response.data);
-      } catch (error) {
-        console.error("Server is not available:", error);
-        throw new Error(
-          "Сервер для загрузки файлов не запущен. Пожалуйста, запустите сервер командой 'npm run server'"
-        );
+      const token = authService.getToken();
+      if (!token) {
+        throw new Error("Необходима авторизация для загрузки файлов");
       }
 
+      // Оптимизируем изображение перед загрузкой
+      const optimizedFile = await optimizeImage(file, 1200, 1200, 0.7);
+      console.log(
+        `Размер изображения после оптимизации: ${(
+          optimizedFile.size /
+          1024 /
+          1024
+        ).toFixed(2)} МБ`
+      );
+
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", optimizedFile);
 
-      console.log("Sending file to server:", file.name);
-      const response = await axios.post(`${SERVER_URL}/upload`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const headers = {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      };
 
-      console.log("Server response:", response.data);
+      const response = await axios.post(
+        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.FILES.UPLOAD}`,
+        formData,
+        { headers }
+      );
 
       if (!response.data.filePath) {
         throw new Error("Не получен путь к файлу от сервера");
@@ -34,7 +41,6 @@ export const fileService = {
 
       return response.data.filePath;
     } catch (error) {
-      console.error("Error in fileService.saveImage:", error);
       if (axios.isAxiosError(error)) {
         if (error.code === "ECONNREFUSED") {
           throw new Error(

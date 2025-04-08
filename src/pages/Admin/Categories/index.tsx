@@ -25,26 +25,26 @@ const CategoryListContainer: React.FC = () => {
   const handleCreateCategory = async (
     categoryData: Omit<
       Category,
-      "id" | "slug" | "order" | "createdAt" | "updatedAt"
+      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
     >
   ) => {
-    // Slug и order будут добавлены на бэкенде, но можно и здесь их добавить
     const category = {
       ...categoryData,
       slug: categoryData.name.toLowerCase().replace(/\s+/g, "-"),
       order: categories.length,
     };
     await dispatch(createCategory(category));
+    dispatch(fetchCategories());
   };
 
   const handleUpdateCategory = async (
     id: string,
     categoryData: Omit<
       Category,
-      "id" | "slug" | "order" | "createdAt" | "updatedAt"
+      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
     >
   ) => {
-    const existingCategory = categories.find((c) => c.id === id);
+    const existingCategory = categories.find((c) => c._id === id);
     const category = {
       ...categoryData,
       slug:
@@ -53,10 +53,12 @@ const CategoryListContainer: React.FC = () => {
       order: existingCategory?.order || 0,
     };
     await dispatch(updateCategory({ id, category }));
+    dispatch(fetchCategories());
   };
 
   const handleDeleteCategory = async (id: string) => {
     await dispatch(deleteCategory(id));
+    dispatch(fetchCategories());
   };
 
   if (loading) {

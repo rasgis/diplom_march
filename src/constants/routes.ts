@@ -13,5 +13,8 @@ export const ROUTES = {
     PRODUCT_EDIT: "/admin/products/:id",
     PRODUCT_CREATE: "/admin/products/create",
     CATEGORIES: "/admin/categories",
+    USERS: "/admin/users",
+    USER_EDIT: "/admin/users/:id",
+    USER_CREATE: "/admin/users/create",
   },
 } as const;

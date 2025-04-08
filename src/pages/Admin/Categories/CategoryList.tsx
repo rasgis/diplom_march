@@ -15,14 +15,14 @@ interface CategoryListProps {
   onAdd: (
     category: Omit<
       Category,
-      "id" | "slug" | "order" | "createdAt" | "updatedAt"
+      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
     >
   ) => Promise<void>;
   onEdit: (
     id: string,
     category: Omit<
       Category,
-      "id" | "slug" | "order" | "createdAt" | "updatedAt"
+      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
     >
   ) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
@@ -44,9 +44,13 @@ const CategoryList: React.FC<CategoryListProps> = ({
   const [expandedCategories, setExpandedCategories] = useState<
     Record<string, boolean>
   >({});
+  const [addingToParentId, setAddingToParentId] = useState<string | undefined>(
+    undefined
+  );
 
   const handleAdd = (parentId?: string) => {
     setEditingCategory(null);
+    setAddingToParentId(parentId);
     setOpen(true);
   };
 
@@ -61,7 +65,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
 
   const handleConfirmDelete = async () => {
     if (deletingCategory) {
-      await onDelete(deletingCategory.id);
+      await onDelete(deletingCategory._id);
       setDeletingCategory(null);
     }
   };
@@ -73,11 +77,11 @@ const CategoryList: React.FC<CategoryListProps> = ({
   const handleSubmit = async (
     category: Omit<
       Category,
-      "id" | "slug" | "order" | "createdAt" | "updatedAt"
+      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
     >
   ) => {
     if (editingCategory) {
-      await onEdit(editingCategory.id, category);
+      await onEdit(editingCategory._id, category);
     } else {
       await onAdd(category);
     }
@@ -92,11 +96,16 @@ const CategoryList: React.FC<CategoryListProps> = ({
   };
 
   const renderCategoryRow = (category: Category, level: number = 0) => {
-    const hasChildren = categories.some((c) => c.parentId === category.id);
-    const isExpanded = expandedCategories[category.id] || false;
+    if (!category._id) {
+      console.error("Category without _id:", category);
+      return null;
+    }
+
+    const hasChildren = categories.some((c) => c.parentId === category._id);
+    const isExpanded = expandedCategories[category._id] || false;
 
     return (
-      <React.Fragment key={category.id}>
+      <div key={`category-${category._id}`}>
         <div
           className={styles.categoryItem}
           style={{ marginLeft: `${level * 20}px` }}
@@ -106,7 +115,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
               {hasChildren ? (
                 <button
                   className={styles.expandButton}
-                  onClick={() => toggleExpand(category.id)}
+                  onClick={() => toggleExpand(category._id)}
                 >
                   {isExpanded ? (
                     <ExpandLessIcon fontSize="small" />
@@ -147,11 +156,11 @@ const CategoryList: React.FC<CategoryListProps> = ({
         {isExpanded && hasChildren && (
           <div className={styles.childrenContainer}>
             {categories
-              .filter((c) => c.parentId === category.id)
+              .filter((c) => c.parentId === category._id)
               .map((child) => renderCategoryRow(child, level + 1))}
           </div>
         )}
-      </React.Fragment>
+      </div>
     );
   };
 
@@ -190,6 +199,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
             <CategoryForm
               category={editingCategory || undefined}
               categories={categories}
+              parentId={addingToParentId}
               onSubmit={handleSubmit}
               onCancel={() => setOpen(false)}
             />

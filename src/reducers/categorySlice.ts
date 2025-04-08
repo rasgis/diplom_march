@@ -26,7 +26,9 @@ export const fetchCategories = createAsyncThunk(
 
 export const createCategory = createAsyncThunk(
   "categories/createCategory",
-  async (category: Omit<Category, "id" | "createdAt" | "updatedAt">) => {
+  async (
+    category: Omit<Category, "_id" | "id" | "createdAt" | "updatedAt">
+  ) => {
     const newCategory = await categoryService.createCategory(category);
     return newCategory;
   }
@@ -78,7 +80,7 @@ const categorySlice = createSlice({
       // Update Category
       .addCase(updateCategory.fulfilled, (state, action) => {
         const index = state.items.findIndex(
-          (item) => item.id === action.payload.id
+          (item) => item._id === action.payload._id
         );
         if (index !== -1) {
           state.items[index] = action.payload;
@@ -86,7 +88,7 @@ const categorySlice = createSlice({
       })
       // Delete Category
       .addCase(deleteCategory.fulfilled, (state, action) => {
-        state.items = state.items.filter((item) => item.id !== action.payload);
+        state.items = state.items.filter((item) => item._id !== action.payload);
       });
   },
 });

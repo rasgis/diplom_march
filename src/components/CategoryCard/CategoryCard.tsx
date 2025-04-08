@@ -16,7 +16,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
 
   return (
     <Link
-      to={ROUTES.CATEGORY.replace(":categoryId", category.id)}
+      to={ROUTES.CATEGORY.replace(":categoryId", category._id)}
       className={styles.link}
       onClick={handleClick}
     >

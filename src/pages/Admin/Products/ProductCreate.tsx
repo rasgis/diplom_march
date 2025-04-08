@@ -7,6 +7,7 @@ import { Product } from "../../../types/product";
 import { Category } from "../../../types/category";
 import ImageUpload from "../../../components/ImageUpload/ImageUpload";
 import { fileService } from "../../../services/fileService";
+import { categoryService } from "../../../services/categoryService";
 import styles from "./Admin.module.css";
 
 const ProductCreate: React.FC = () => {
@@ -19,12 +20,12 @@ const ProductCreate: React.FC = () => {
   const [imagePath, setImagePath] = useState<string | undefined>(undefined);
 
   const [formData, setFormData] = useState<
-    Omit<Product, "id" | "createdAt" | "updatedAt">
+    Omit<Product, "_id" | "id" | "createdAt" | "updatedAt">
   >({
     name: "",
     description: "",
     price: 0,
-    categoryId: "",
+    category: "",
     image: "",
     unitOfMeasure: "шт",
   });
@@ -42,7 +43,6 @@ const ProductCreate: React.FC = () => {
       let finalImagePath = imagePath || "";
 
       if (imageFile) {
-        console.log("Uploading image:", imageFile);
         finalImagePath = await fileService.saveImage(imageFile);
         console.log("Image uploaded successfully:", finalImagePath);
       }
@@ -83,35 +83,8 @@ const ProductCreate: React.FC = () => {
     setImageFile(file);
   };
 
-  // Функция для построения дерева категорий
-  const buildCategoryTree = (
-    categories: Category[],
-    parentId?: string
-  ): Category[] => {
-    return categories
-      .filter((category) => category.parentId === parentId)
-      .map((category) => ({
-        ...category,
-        children: buildCategoryTree(categories, category.id),
-      }));
-  };
-
-  // Функция для рекурсивного рендеринга опций категорий
-  const renderCategoryOptions = (categories: Category[], level = 0) => {
-    return categories.map((category) => (
-      <React.Fragment key={category.id}>
-        <option value={category.id} style={{ paddingLeft: `${level * 20}px` }}>
-          {level > 0 ? "— " : ""}
-          {category.name}
-        </option>
-        {category.children &&
-          renderCategoryOptions(category.children, level + 1)}
-      </React.Fragment>
-    ));
-  };
-
-  // Построение дерева категорий
-  const categoryTree = buildCategoryTree(categories);
+  // Получаем категории в виде плоского списка с уровнями вложенности
+  const flatCategories = categoryService.getAllCategoriesFlat(categories);
 
   // Список единиц измерения
   const unitsOfMeasure = [
@@ -189,16 +162,26 @@ const ProductCreate: React.FC = () => {
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="categoryId">Категория</label>
+          <label htmlFor="category">Категория</label>
           <select
-            id="categoryId"
-            name="categoryId"
-            value={formData.categoryId}
+            id="category"
+            name="category"
+            value={formData.category as string}
             onChange={handleChange}
             required
           >
             <option value="">Выберите категорию</option>
-            {renderCategoryOptions(categoryTree)}
+            {flatCategories.map((cat) => (
+              <option
+                key={cat.id}
+                value={cat.id}
+                style={{ paddingLeft: `${cat.level * 20}px` }}
+              >
+                {"\u00A0".repeat(cat.level * 2)}
+                {cat.isParent ? "📁 " : "📄 "}
+                {cat.name}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -207,6 +190,9 @@ const ProductCreate: React.FC = () => {
           <ImageUpload
             onImageSelect={handleImageSelect}
             currentImage={imagePath}
+            maxWidth={800}
+            maxHeight={800}
+            quality={0.75}
           />
         </div>
 

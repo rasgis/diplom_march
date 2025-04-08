@@ -17,13 +17,13 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleRemove = () => {
-    dispatch(removeFromCart(item.id));
+    dispatch(removeFromCart(item._id));
     setIsDeleteModalOpen(false);
   };
 
   const handleQuantityChange = (newQuantity: number) => {
     if (newQuantity > 0) {
-      dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+      dispatch(updateQuantity({ _id: item._id, quantity: newQuantity }));
     }
   };
 

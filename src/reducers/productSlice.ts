@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { Product } from "../types/product";
+import { Product, ProductFormData } from "../types/product";
 import { productService } from "../services/productService";
 
 interface ProductState {
@@ -34,7 +34,7 @@ export const fetchProductById = createAsyncThunk(
 
 export const createProduct = createAsyncThunk(
   "products/createProduct",
-  async (product: Omit<Product, "id" | "createdAt" | "updatedAt">) => {
+  async (product: ProductFormData) => {
     const newProduct = await productService.createProduct(product);
     return newProduct;
   }
@@ -42,7 +42,7 @@ export const createProduct = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
   "products/updateProduct",
-  async ({ id, product }: { id: string; product: Partial<Product> }) => {
+  async ({ id, product }: { id: string; product: ProductFormData }) => {
     const updatedProduct = await productService.updateProduct(id, product);
     return updatedProduct;
   }
@@ -99,19 +99,19 @@ const productSlice = createSlice({
       // Update Product
       .addCase(updateProduct.fulfilled, (state, action) => {
         const index = state.items.findIndex(
-          (item) => item.id === action.payload.id
+          (item) => item._id === action.payload._id
         );
         if (index !== -1) {
           state.items[index] = action.payload;
         }
-        if (state.selectedProduct?.id === action.payload.id) {
+        if (state.selectedProduct?._id === action.payload._id) {
           state.selectedProduct = action.payload;
         }
       })
       // Delete Product
       .addCase(deleteProduct.fulfilled, (state, action) => {
-        state.items = state.items.filter((item) => item.id !== action.payload);
-        if (state.selectedProduct?.id === action.payload) {
+        state.items = state.items.filter((item) => item._id !== action.payload);
+        if (state.selectedProduct?._id === action.payload) {
           state.selectedProduct = null;
         }
       });

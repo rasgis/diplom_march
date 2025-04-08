@@ -1,14 +1,26 @@
 export interface Product {
-  id: string;
+  _id: string;
+  id?: string;
   name: string;
   description: string;
   price: number;
   image?: string;
-  categoryId: string;
+  category: string | { _id: string; name?: string };
   unitOfMeasure: string;
   stock?: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ProductFormData {
+  name: string;
+  description: string;
+  price: number;
+  image: string | File;
+  category: string;
+  unitOfMeasure: string;
+  stock?: number;
+  isActive?: boolean;
 }
 
 export interface ProductFilters {

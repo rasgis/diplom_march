@@ -50,7 +50,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <>
       <Link
-        to={ROUTES.PRODUCT_DETAIL.replace(":id", product.id)}
+        to={ROUTES.PRODUCT_DETAIL.replace(":id", product._id)}
         className={styles.cardLink}
         onClick={handleCardClick}
       >

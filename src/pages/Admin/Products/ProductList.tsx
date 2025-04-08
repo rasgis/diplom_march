@@ -15,6 +15,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteConfirmationModal from "../../../components/DeleteConfirmationModal/DeleteConfirmationModal";
+import { Product, ProductFormData } from "../../../types";
 
 const ProductList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -28,7 +29,7 @@ const ProductList: React.FC = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
-  const [productToEdit, setProductToEdit] = useState<any | null>(null);
+  const [productToEdit, setProductToEdit] = useState<Product | null>(null);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -62,17 +63,21 @@ const ProductList: React.FC = () => {
     setIsFormModalOpen(true);
   };
 
-  const handleEditClick = (product: any) => {
+  const handleEditClick = (product: Product) => {
     setProductToEdit(product);
     setIsFormModalOpen(true);
   };
 
-  const handleFormSubmit = async (values: any) => {
+  const handleFormSubmit = async (values: ProductFormData) => {
     try {
       if (productToEdit) {
+        console.log("Updating product with ID:", productToEdit._id);
+        console.log("Update data:", values);
         await dispatch(
-          updateProduct({ id: productToEdit.id, product: values })
+          updateProduct({ id: productToEdit._id, product: values })
         ).unwrap();
+        // Перезагружаем список товаров после обновления
+        dispatch(fetchProducts());
       } else {
         await dispatch(createProduct(values)).unwrap();
       }
@@ -89,14 +94,26 @@ const ProductList: React.FC = () => {
   };
 
   // Функция для получения названия категории по ID
-  const getCategoryName = (categoryId: string) => {
-    const category = categories.find((cat) => cat.id === categoryId);
+  const getCategoryName = (categoryId: any): string => {
+    // Проверяем, если categoryId - это объект с полем _id, берем это поле
+    const id =
+      typeof categoryId === "object" && categoryId !== null
+        ? (categoryId as { _id: string })._id
+        : categoryId;
+
+    // Если после обработки id осталось объектом или undefined, возвращаем "Неизвестная категория"
+    if (typeof id !== "string" || !id) {
+      return "Неизвестная категория";
+    }
+
+    // Поиск категории по id
+    const category = categories.find((cat) => cat._id === id);
     return category ? category.name : "Неизвестная категория";
   };
 
   // Функция для получения названия продукта по ID
   const getProductName = (productId: string) => {
-    const product = products.find((p) => p.id === productId);
+    const product = products.find((p) => p._id === productId);
     return product ? product.name : "";
   };
 
@@ -137,7 +154,7 @@ const ProductList: React.FC = () => {
           </thead>
           <tbody>
             {products.map((product) => (
-              <tr key={product.id}>
+              <tr key={product._id}>
                 <td>
                   <img
                     src={product.image}
@@ -148,10 +165,7 @@ const ProductList: React.FC = () => {
                 <td>{product.name}</td>
                 <td>{product.description}</td>
                 <td>{product.price} ₽</td>
-                <td>
-                  {categories.find((cat) => cat.id === product.categoryId)
-                    ?.name || "Не указана"}
-                </td>
+                <td>{getCategoryName(product.category)}</td>
                 <td>{product.unitOfMeasure}</td>
                 <td>
                   <div className={styles.actions}>
@@ -163,7 +177,7 @@ const ProductList: React.FC = () => {
                       Редактировать
                     </button>
                     <button
-                      onClick={() => handleDeleteClick(product.id)}
+                      onClick={() => handleDeleteClick(product._id)}
                       className={styles.deleteButton}
                     >
                       <DeleteIcon className={styles.buttonIcon} />

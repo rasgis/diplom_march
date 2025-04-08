@@ -66,7 +66,7 @@ const CategoryPage: React.FC = () => {
   }
 
   const currentCategory = categories.find(
-    (category: Category) => category.id === categoryId
+    (category: Category) => category._id === categoryId
   );
 
   if (!currentCategory) {
@@ -101,10 +101,38 @@ const CategoryPage: React.FC = () => {
     (category: Category) => category.parentId === categoryId
   );
 
-  // Фильтруем продукты текущей категории
-  const categoryProducts = products.filter(
-    (product: Product) => product.categoryId === categoryId
-  );
+  // Получаем ID всех подкатегорий (включая все уровни вложенности)
+  const getAllSubcategoryIds = (parentCategoryId: string): string[] => {
+    const directSubcategories = categories.filter(
+      (category) => category.parentId === parentCategoryId
+    );
+
+    if (directSubcategories.length === 0) {
+      return [parentCategoryId];
+    }
+
+    const allSubcategoryIds = directSubcategories.flatMap((subcat) =>
+      getAllSubcategoryIds(subcat._id)
+    );
+
+    return [parentCategoryId, ...allSubcategoryIds];
+  };
+
+  // Получаем все ID категорий, включая текущую и все подкатегории
+  const allCategoryIds = getAllSubcategoryIds(categoryId || "");
+
+  console.log("Filtering products for categories:", allCategoryIds);
+
+  // Фильтруем продукты текущей категории и всех её подкатегорий
+  const categoryProducts = products.filter((product: Product) => {
+    // Обработка случая, когда category это объект
+    const productCategoryId =
+      typeof product.category === "object" && product.category !== null
+        ? (product.category as { _id: string })._id
+        : product.category;
+
+    return allCategoryIds.includes(productCategoryId);
+  });
 
   return (
     <Container className={styles.container}>
@@ -129,14 +157,17 @@ const CategoryPage: React.FC = () => {
           {categoryPath.map((category, index) => {
             const isLast = index === categoryPath.length - 1;
             return isLast ? (
-              <Typography key={category.id} className={styles.breadcrumbActive}>
+              <Typography
+                key={category._id}
+                className={styles.breadcrumbActive}
+              >
                 {category.name}
               </Typography>
             ) : (
               <MuiLink
-                key={category.id}
+                key={category._id}
                 component={Link}
-                to={`${ROUTES.CATEGORY.replace(":categoryId", category.id)}`}
+                to={`${ROUTES.CATEGORY.replace(":categoryId", category._id)}`}
                 className={styles.breadcrumbLink}
               >
                 {category.name}
@@ -168,7 +199,7 @@ const CategoryPage: React.FC = () => {
             </Typography>
             <div className={styles.productGrid}>
               {categoryProducts.map((product: Product) => (
-                <div key={product.id} className={styles.productGridItem}>
+                <div key={product._id} className={styles.productGridItem}>
                   <ProductCard
                     product={product}
                     isAuthenticated={isAuthenticated}
