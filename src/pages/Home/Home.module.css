@@ -269,7 +269,7 @@
   width: 100%;
   padding: 4rem 1rem;
   text-align: center;
-  background-color: #1d1e24;
+  background: linear-gradient(135deg, #097c73, #074b5f);
   border-radius: 8px;
   margin: 2rem 0;
   display: flex;
@@ -277,7 +277,10 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  box-shadow: 0 4px 12px rgba(90, 29, 231, 0.2);
+  transform-origin: center;
+  will-change: transform;
+  border: 1px solid rgba(11, 188, 156, 0.3);
 }
 
 .about::before {
@@ -287,12 +290,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(11, 224, 184, 0.1),
-    rgba(29, 30, 36, 0.1)
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.2),
+    transparent 70%
   );
-  z-index: -1;
+  z-index: 0;
+  border-radius: 12px;
 }
 
 .about::after {
@@ -305,31 +309,36 @@
   background: linear-gradient(
     45deg,
     transparent 0%,
-    rgba(11, 224, 184, 0.1) 50%,
+    rgba(255, 255, 255, 0.1) 50%,
     transparent 100%
   );
-  animation: shine 8s infinite;
-  z-index: -1;
+  z-index: 0;
 }
 
 .about h2 {
-  color: #d4ffea;
+  color: white;
   margin-bottom: 2rem;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   text-align: center;
   position: relative;
   z-index: 1;
   font-weight: 700;
+  transform-origin: center;
+  will-change: transform;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.5px;
 }
 
 .about p {
-  color: #d4ffea;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
-  text-align: justify;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.9;
+  max-width: 800px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
   position: relative;
   z-index: 1;
+  font-weight: 400;
+  font-size: 1.1rem;
 }
 
 .discountBanner {
@@ -504,29 +513,35 @@
   width: 100%;
   padding: 2rem;
   margin: 2rem 0;
-  background: linear-gradient(135deg, #1d1e24, #2a2b33);
-  border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #097c73, #074b5f);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(11, 224, 184, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(90, 29, 231, 0.2);
+  transition: all 0.3s ease;
+  transform-origin: center;
+  will-change: transform;
+  border: 1px solid rgba(11, 188, 156, 0.3);
 }
 
 .materialsStore:hover,
 .qualityAssurance:hover,
 .trustAndExperience:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(11, 224, 184, 0.2);
+  box-shadow: 0 8px 25px rgba(11, 210, 224, 0.3);
 }
 
 .materialsStore h3,
 .qualityAssurance h3,
 .trustAndExperience h3 {
-  color: #d4ffea;
+  font-size: 2rem;
+  color: white;
   margin-bottom: 1rem;
-  font-size: 1.8rem;
-  font-weight: 600;
+  text-align: center;
+  font-weight: 700;
   position: relative;
   z-index: 1;
 }
@@ -534,12 +549,15 @@
 .materialsStore p,
 .qualityAssurance p,
 .trustAndExperience p {
-  color: #d4ffea;
-  line-height: 1.6;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  max-width: 800px;
   position: relative;
   z-index: 1;
-  text-align: justify;
+  line-height: 1.6;
+  font-weight: 400;
 }
 
 .partners {
@@ -610,10 +628,12 @@
 .partnerLogoContainer:hover {
   transform: translateY(-5px);
   background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  border-color: rgba(11, 224, 184, 0.3);
 }
 
 .partnerLogoContainer:hover .partnerLogo {
-  filter: brightness(1.2);
+  filter: grayscale(0%) brightness(1);
 }
 
 .partnerLogo {
@@ -621,7 +641,7 @@
   height: auto;
   max-width: 120px;
   transition: all 0.3s ease;
-  filter: brightness(0.9);
+  filter: grayscale(100%) brightness(0.8);
 }
 
 @media (max-width: 768px) {
