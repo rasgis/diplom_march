@@ -1,13 +1,13 @@
 .scrollTopButton {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 50px;
-  height: 50px;
+  bottom: 20px;
+  right: 100px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background-color: #097c73;
-  color: white;
-  border: none;
+  background: transparent;
+  color: #0bbc9c;
+  border: 2px solid rgba(11, 188, 156, 0.7);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -16,14 +16,20 @@
   visibility: hidden;
   transition: all 0.3s ease;
   z-index: 9999;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: radial-gradient(
+    circle,
+    rgba(11, 188, 156, 0.7) 20%,
+    rgba(11, 224, 184, 0) 100%
+  );
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.3);
+  animation: pulse 2s infinite;
   transform: translateY(20px);
 }
 
 .scrollTopButton:hover {
-  background-color: #0be0b8;
-  transform: translateY(0) scale(1.05);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  border-color: rgba(11, 188, 156, 0.2);
+  box-shadow: 0 0 30px 10px rgba(11, 188, 156, 0.7);
+  transform: scale(1.05);
 }
 
 .scrollTopButton:active {
@@ -36,11 +42,23 @@
   transform: translateY(0);
 }
 
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(11, 188, 156, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(11, 188, 156, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(11, 188, 156, 0);
+  }
+}
+
 @media (max-width: 768px) {
   .scrollTopButton {
-    width: 40px;
-    height: 40px;
-    bottom: 20px;
-    right: 20px;
+    width: 50px;
+    height: 50px;
+    bottom: 10px;
+    right: 80px;
   }
 }
