@@ -35,7 +35,11 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
         </div>
         <div className={styles.info}>
           <h3 className={styles.name}>{item.name}</h3>
-          <p className={styles.category}>{item.categoryId}</p>
+          <p className={styles.category}>
+            {typeof item.category === "string"
+              ? item.category
+              : item.category.name}
+          </p>
           <p className={styles.price}>{item.price} ₽</p>
         </div>
         <div className={styles.quantity}>

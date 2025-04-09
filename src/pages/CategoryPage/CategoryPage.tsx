@@ -4,7 +4,6 @@ import {
   Container,
   Typography,
   Box,
-  Grid,
   Breadcrumbs,
   Link as MuiLink,
 } from "@mui/material";
@@ -41,9 +40,6 @@ const CategoryPage: React.FC = () => {
     if (categoryId) {
       dispatch(fetchCategories());
       dispatch(fetchProducts());
-
-      // Плавный скролл вверх при переходе на новую страницу
-      scrollToTop();
     }
   }, [dispatch, categoryId]);
 
@@ -121,14 +117,11 @@ const CategoryPage: React.FC = () => {
   // Получаем все ID категорий, включая текущую и все подкатегории
   const allCategoryIds = getAllSubcategoryIds(categoryId || "");
 
-  console.log("Filtering products for categories:", allCategoryIds);
-
   // Фильтруем продукты текущей категории и всех её подкатегорий
   const categoryProducts = products.filter((product: Product) => {
-    // Обработка случая, когда category это объект
     const productCategoryId =
       typeof product.category === "object" && product.category !== null
-        ? (product.category as { _id: string })._id
+        ? product.category._id
         : product.category;
 
     return allCategoryIds.includes(productCategoryId);

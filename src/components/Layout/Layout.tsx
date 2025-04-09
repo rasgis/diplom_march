@@ -13,11 +13,6 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
 
-  // Scroll to top when location changes
-  useEffect(() => {
-    scrollToTop();
-  }, [location]);
-
   return (
     <div className={styles.layout}>
       <Header />

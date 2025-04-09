@@ -15,15 +15,8 @@ export const scrollToTop = (
 };
 
 /**
- * Хук для использования в useEffect для автоматического скролла вверх при переходе на страницу
- */
-export const useScrollTop = (): void => {
-  scrollToTop();
-};
-
-/**
  * Компонент для автоматического скролла страницы вверх при изменении маршрута
- * Используется в корневом компоненте App.tsx или Layout
+ * Используется в корневом компоненте App.tsx
  */
 export const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
