@@ -79,8 +79,8 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
     try {
       let finalImagePath = imagePath || "";
 
-      if (image) {
-        finalImagePath = await fileService.saveImage(image);
+      if (image && typeof image !== "string") {
+        finalImagePath = await fileService.saveImage(image, "category");
       }
 
       const categoryData = {

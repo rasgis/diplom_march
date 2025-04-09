@@ -110,7 +110,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
           className={styles.categoryItem}
           style={{ marginLeft: `${level * 20}px` }}
         >
-          <div className={styles.categoryInfo}>
+          <div className={styles.categoryInfo} data-label="Категория">
             <div className={styles.expandButtonContainer}>
               {hasChildren ? (
                 <button
@@ -136,7 +136,7 @@ const CategoryList: React.FC<CategoryListProps> = ({
             )}
             <h3>{category.name}</h3>
           </div>
-          <div className={styles.actions}>
+          <div className={styles.actions} data-label="Действия">
             <button
               className={styles.editButton}
               onClick={() => handleEdit(category)}

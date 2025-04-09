@@ -22,7 +22,30 @@ if (!fs.existsSync(uploadsDir)) {
 // Настройка хранилища для multer
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, uploadsDir);
+    // Определение типа загрузки на основе referer или query параметра
+    const referer = req.get("referer") || "";
+
+    if (
+      referer.includes("/admin/categories") ||
+      req.query.type === "category"
+    ) {
+      const categoryDir = path.join(uploadsDir, "categories");
+      if (!fs.existsSync(categoryDir)) {
+        fs.mkdirSync(categoryDir, { recursive: true });
+      }
+      cb(null, categoryDir);
+    } else if (
+      referer.includes("/admin/products") ||
+      req.query.type === "product"
+    ) {
+      const productDir = path.join(uploadsDir, "products");
+      if (!fs.existsSync(productDir)) {
+        fs.mkdirSync(productDir, { recursive: true });
+      }
+      cb(null, productDir);
+    } else {
+      cb(null, uploadsDir);
+    }
   },
   filename(req, file, cb) {
     // Используем нашу утилиту для генерации имени файла
@@ -52,7 +75,21 @@ const upload = multer({
 
 // POST /api/upload - загрузка одного файла
 router.post("/", protect, upload.single("file"), (req, res) => {
-  const filePath = "/uploads/" + req.file.filename;
+  // Определяем папку на основе referer или query параметра
+  const referer = req.get("referer") || "";
+  let filePath;
+
+  if (referer.includes("/admin/categories") || req.query.type === "category") {
+    filePath = "/uploads/categories/" + req.file.filename;
+  } else if (
+    referer.includes("/admin/products") ||
+    req.query.type === "product"
+  ) {
+    filePath = "/uploads/products/" + req.file.filename;
+  } else {
+    filePath = "/uploads/" + req.file.filename;
+  }
+
   res.json({ filePath });
 });
 

@@ -9,6 +9,7 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+// import emailRoutes from "./routes/emailRoutes.js";
 import fs from "fs";
 import { dirname } from "path";
 
@@ -65,6 +66,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/upload", uploadRoutes);
+// app.use("/api/email", emailRoutes);
 
 // Базовый роут для проверки
 app.get("/api/health", (req, res) => {

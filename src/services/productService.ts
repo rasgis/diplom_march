@@ -43,7 +43,7 @@ class ProductService {
     }
 
     // Загружаем файл
-    return await fileService.saveImage(image as File);
+    return await fileService.saveImage(image as File, "product");
   }
 
   async getProducts(): Promise<Product[]> {

@@ -42,7 +42,9 @@ const createProduct = asyncHandler(async (req, res) => {
     req.body;
 
   // Получаем путь к загруженному файлу из multer
-  const image = req.file ? `/uploads/${req.file.filename}` : req.body.image;
+  const image = req.file
+    ? `/uploads/products/${req.file.filename}`
+    : req.body.image;
 
   // Если категория приходит строкой, преобразуем в ObjectId
   let categoryId = category;
@@ -79,7 +81,9 @@ const createProduct = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
   // Получаем путь к загруженному файлу из multer
-  const image = req.file ? `/uploads/${req.file.filename}` : req.body.image;
+  const image = req.file
+    ? `/uploads/products/${req.file.filename}`
+    : req.body.image;
 
   // Если категория приходит строкой, преобразуем в ObjectId
   if (req.body.category && typeof req.body.category === "string") {

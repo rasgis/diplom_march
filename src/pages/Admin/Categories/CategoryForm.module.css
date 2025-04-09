@@ -3,7 +3,9 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 1rem;
-  min-width: 400px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .formGroup {
@@ -27,6 +29,8 @@
   border-radius: 4px;
   font-size: 1rem;
   transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .input:focus,
@@ -60,6 +64,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .buttonIcon {
@@ -76,16 +81,111 @@
 }
 
 .submitButton {
-  background-color: #007bff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  background-color: #097c73;
   color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.submitButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(9, 202, 160, 0.856),
+    transparent
+  );
+  transition: all 0.5s;
 }
 
 .submitButton:hover {
-  background-color: #0056b3;
+  background-color: #0be0b8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(11, 224, 184, 0.3);
 }
 
-.cancelButton:disabled,
+.submitButton:hover::before {
+  left: 100%;
+}
+
 .submitButton:disabled {
+  background-color: #3b867f;
   opacity: 0.7;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.submitButton:disabled:hover::before {
+  left: -100%;
+}
+
+/* Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+  .form {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
+
+  .input,
+  .select {
+    font-size: 16px; /* Предотвращает масштабирование на iOS */
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+    justify-content: center;
+    padding: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .formGroup label {
+    font-size: 0.875rem;
+  }
+
+  .input,
+  .select {
+    padding: 0.625rem;
+  }
+
+  .error {
+    font-size: 0.8rem;
+  }
+
+  .cancelButton,
+  .submitButton {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
 }

@@ -38,12 +38,43 @@
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  display: block;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
+  min-width: auto;
+  table-layout: fixed;
+}
+
+.table tr {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.table tr:hover {
+  background-color: rgba(25, 118, 210, 0.04);
+  transform: scale(1.01);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table td {
+  padding: 1rem;
+  vertical-align: middle;
+  transition: all 0.2s ease;
+}
+
+.table td:first-child {
+  font-weight: 500;
+}
+
+.table td:last-child {
+  white-space: nowrap;
 }
 
 .table th,
@@ -51,16 +82,29 @@
   padding: 1rem;
   text-align: left;
   border-bottom: 1px solid #eee;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 40%;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 30%;
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 30%;
 }
 
 .table th {
   background-color: #f5f5f5;
   font-weight: 600;
   color: #333;
-}
-
-.table tr:hover {
-  background-color: #f9f9f9;
 }
 
 .actions {
@@ -147,33 +191,83 @@
   margin-top: 2rem;
 }
 
-.submitButton,
-.cancelButton {
-  padding: 0.75rem 1.5rem;
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  background-color: #097c73;
+  color: white;
+  text-decoration: none;
   border-radius: 4px;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  border: none;
   cursor: pointer;
-  transition: all 0.2s;
+  min-width: 200px;
 }
 
-.submitButton {
-  background-color: #1976d2;
-  color: white;
-  border: none;
+.submitButton::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(9, 202, 160, 0.856),
+    transparent
+  );
+  transition: all 0.5s;
 }
 
 .submitButton:hover {
-  background-color: #1565c0;
+  background-color: #0be0b8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(11, 224, 184, 0.3);
+}
+
+.submitButton:hover::before {
+  left: 100%;
+}
+
+.submitButton:disabled {
+  background-color: #3b867f;
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.submitButton:disabled:hover::before {
+  left: -100%;
 }
 
 .cancelButton {
   background-color: #f5f5f5;
   color: #666;
   border: 1px solid #ddd;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  transition: all 0.3s;
+  text-align: center;
+  font-weight: 500;
+  cursor: pointer;
+  min-width: 200px;
 }
 
 .cancelButton:hover {
   background-color: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .loading {
@@ -191,4 +285,105 @@
   background-color: #ffebee;
   border-radius: 4px;
   margin: 1rem 0;
+}
+
+/* Медиа-запросы для мобильных устройств */
+@media (max-width: 768px) {
+  .adminContainer {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 1.5rem;
+  }
+
+  .header h2 {
+    text-align: center;
+  }
+
+  .addButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tableContainer {
+    margin: 0 -1rem;
+    border-radius: 0;
+  }
+
+  .table tr {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 0.5rem;
+  }
+
+  .table td {
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: none;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: 1rem;
+    min-width: 100px;
+  }
+
+  .table td:last-child {
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    margin-top: 0.5rem;
+  }
+
+  .table tr:hover {
+    transform: none;
+    background-color: rgba(25, 118, 210, 0.04);
+  }
+}
+
+@media (max-width: 480px) {
+  .adminContainer {
+    padding: 0.5rem;
+  }
+
+  .tableContainer {
+    margin: 0 -0.5rem;
+  }
+
+  .table tr {
+    padding: 0.75rem;
+  }
+
+  .table td {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .table td::before {
+    min-width: 80px;
+    font-size: 0.9rem;
+  }
+
+  .table td:last-child {
+    padding-top: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .editButton,
+  .deleteButton {
+    padding: 0.4rem;
+  }
+
+  .dragHandle {
+    display: none;
+  }
 }

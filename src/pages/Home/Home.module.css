@@ -337,23 +337,92 @@
 }
 
 .about p {
-  color: rgba(255, 255, 255, 0.95);
-  line-height: 1.9;
-  max-width: 800px;
-  margin: 0 auto 1.5rem;
-  text-align: center;
+  color: #d4ffea;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  text-align: justify;
   position: relative;
   z-index: 1;
-  font-weight: 400;
-  font-size: 1.1rem;
 }
 
-.contact {
+.materialsStore,
+.qualityAssurance,
+.trustAndExperience {
+  width: 100%;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(11, 224, 184, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.materialsStore:hover,
+.qualityAssurance:hover,
+.trustAndExperience:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(11, 210, 224, 0.3);
+}
+
+.materialsStore h3,
+.qualityAssurance h3,
+.trustAndExperience h3 {
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.materialsStore p,
+.qualityAssurance p,
+.trustAndExperience p {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+.error {
+  color: #ff4757;
+  background-color: rgba(255, 71, 87, 0.1);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255, 71, 87, 0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.partners {
   width: 100%;
   padding: 4rem 1rem;
   text-align: center;
-  background-color: #1d1e24;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  border-radius: 12px;
   margin: 2rem 0;
   display: flex;
   flex-direction: column;
@@ -363,7 +432,7 @@
   box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
 }
 
-.contact::before {
+.partners::before {
   content: "";
   position: absolute;
   top: 0;
@@ -374,7 +443,7 @@
   z-index: -1;
 }
 
-.contact h2 {
+.partners h2 {
   color: white;
   margin-bottom: 2rem;
   font-size: 2rem;
@@ -384,374 +453,79 @@
   font-weight: 700;
 }
 
-.contactForm {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  width: 100%;
-  max-width: 600px;
-  position: relative;
-  z-index: 1;
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  width: 100%;
-}
-
-.formGroup label {
-  color: white;
-  margin-bottom: 0.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-}
-
-.formGroup input,
-.formGroup textarea {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  margin: 2px;
-}
-
-.formGroup input:focus,
-.formGroup textarea:focus {
-  outline: none;
-  border-color: #0be0b8;
-  background-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 0 0 0 2px rgba(11, 224, 184, 0.3);
-}
-
-.formGroup input::placeholder,
-.formGroup textarea::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.submitButton {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background-color: #097c73;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-  font-size: 1.2rem;
-  transition: all 0.3s;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  font-weight: 500;
-  position: relative;
-  overflow: hidden;
-}
-
-.submitButton::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(9, 202, 160, 0.856),
-    transparent
-  );
-  transition: all 0.5s;
-}
-
-.successMessage {
-  background-color: rgba(11, 224, 184, 0.1);
-  border: 1px solid rgba(11, 224, 184, 0.3);
-  border-radius: 4px;
-  padding: 1.5rem;
-  color: white;
-  font-size: 1.1rem;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.successMessage p {
-  margin: 0;
-  line-height: 1.5;
-}
-
-.discountBanner {
-  width: 100%;
-  padding: 2rem;
-  margin: 2rem 0;
-  background: linear-gradient(135deg, #097c73, #074b5f);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(90, 29, 231, 0.2);
-  transition: all 0.3s ease;
-  transform-origin: center;
-  will-change: transform;
-  border: 1px solid rgba(11, 188, 156, 0.3);
-}
-
-.discountBanner:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(11, 210, 224, 0.3);
-}
-
-.discountBanner::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(13, 224, 214, 0.5);
-  z-index: -1;
-  border-radius: 8px;
-}
-
-.discountBanner::after {
-  content: "5%";
-  position: absolute;
-  top: -20px;
-  right: -20px;
-  font-size: 120px;
-  font-weight: 900;
-  color: rgba(11, 188, 156, 0.2);
-  z-index: -1;
-  animation: pulsePercent 3s ease-in-out infinite;
-  will-change: transform, color;
-}
-
-.discountTitle {
-  font-size: 2rem;
-  color: white;
-  margin-bottom: 1rem;
-  text-align: center;
-  font-weight: 700;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: float 3s ease-in-out infinite;
-  transform-origin: center;
-  will-change: transform;
-  min-height: 2.5rem;
-}
-
-.discountText {
-  font-size: 1.3rem;
+.partners p {
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 1.5rem;
-  text-align: center;
   max-width: 800px;
-  position: relative;
-  z-index: 1;
+  margin: 0 auto 2rem;
   line-height: 1.6;
-  min-height: 3.2rem;
-  font-weight: 400;
+  font-size: 1.1rem;
 }
 
-.discountButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 2rem;
-  background-color: #097c73;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
-  font-size: 1.2rem;
-  transition: all 0.3s;
-  text-align: center;
-  position: relative;
-  z-index: 1;
-  font-weight: 500;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  min-height: 3.5rem;
-  min-width: 300px;
-}
-
-.discountButton::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(11, 188, 156, 0.2),
-    transparent
-  );
-  transition: all 0.5s;
-}
-
-/* .discountButton:hover {
-  background: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-} */
-
-.discountButton:hover::before {
-  left: 100%;
-}
-
-.discountIcon {
-  font-size: 1.8rem;
-  margin-right: 0.8rem;
-  vertical-align: middle;
-  color: #5318b3;
-}
-
-.discountFeatures {
-  display: flex;
-  justify-content: center;
+.partnersGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 2rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  min-height: 3rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-.discountFeature {
-  display: flex;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+.partnerLogoContainer {
+  cursor: pointer;
   transition: all 0.3s ease;
-  min-height: 2.5rem;
-  min-width: 200px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem;
 }
 
-.discountFeature:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: rgba(255, 255, 255, 0.2);
+.partnerLogoContainer:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(11, 224, 184, 0.2);
+  border-color: rgba(11, 224, 184, 0.3);
 }
 
-.discountFeatureIcon {
-  color: white;
-  margin-right: 0.5rem;
-  font-size: 1.2rem;
+.partnerLogoContainer:hover .partnerLogo {
+  filter: grayscale(0%) brightness(1);
 }
 
-.discountFeature span {
-  font-weight: 500;
-  color: white;
-  font-size: 1rem;
+.partnerLogo {
+  width: 100%;
+  height: 100px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  filter: grayscale(100%) brightness(0.8);
 }
 
-/* Медиа-запросы для мобильных устройств */
 @media (max-width: 768px) {
-  .container {
-    padding: 0 1rem;
-  }
-
-  .title {
-    font-size: 2.5rem;
-  }
-
-  .subtitle {
-    font-size: 1.2rem;
-  }
-
-  .features {
-    grid-template-columns: 1fr;
-  }
-
-  .feature {
-    max-width: 100%;
-  }
-
-  .logo {
-    max-width: 200px;
-  }
-
-  .discountTitle {
-    font-size: 1.6rem;
-    min-height: 2rem;
-  }
-
-  .discountText {
-    font-size: 1.1rem;
-    min-height: 2.8rem;
-  }
-
-  .discountButton {
-    padding: 0.8rem 1.5rem;
-    font-size: 1.1rem;
-    min-height: 3rem;
-    min-width: 250px;
-  }
-
-  .discountIcon {
-    font-size: 1.5rem;
-  }
-
-  .discountBanner::after {
-    font-size: 80px;
-  }
-
-  .discountFeatures {
+  .partnersGrid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 1rem;
-    min-height: 2.5rem;
   }
 
-  .discountFeature {
-    padding: 0.4rem 0.8rem;
-    min-height: 2rem;
-    min-width: 150px;
+  .partnerLogoContainer {
+    padding: 0.75rem;
   }
 
-  .discountFeatureIcon {
-    font-size: 1rem;
-  }
-
-  .discountFeature span {
-    font-size: 0.9rem;
+  .partnerLogo {
+    height: 80px;
   }
 }
 
 @media (max-width: 480px) {
-  .discountTitle {
-    font-size: 1.4rem;
-    min-height: 1.8rem;
+  .partnersGrid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
   }
 
-  .discountText {
-    font-size: 1rem;
-    min-height: 2.5rem;
+  .partnerLogoContainer {
+    padding: 0.5rem;
   }
 
-  .discountButton {
-    padding: 0.7rem 1.2rem;
-    font-size: 1rem;
-    min-height: 2.5rem;
-    min-width: 200px;
-  }
-
-  .discountFeatures {
-    gap: 0.8rem;
-    min-height: 2rem;
-  }
-
-  .discountFeature {
-    padding: 0.3rem 0.6rem;
-    min-height: 1.8rem;
-    min-width: 120px;
+  .partnerLogo {
+    height: 60px;
   }
 }

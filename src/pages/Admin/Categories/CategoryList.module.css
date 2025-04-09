@@ -410,9 +410,51 @@
 
 /* Адаптивность для модального окна */
 @media (max-width: 768px) {
-  .modalContent {
-    width: 95%;
-    padding: 1.5rem;
+  .categoryItem {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .categoryInfo {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .categoryInfo::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #0be0b8;
+    margin-bottom: 0.5rem;
+  }
+
+  .actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .actions::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #0be0b8;
+    margin-bottom: 0.5rem;
+  }
+
+  .editButton,
+  .deleteButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .categoryImage {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
   }
 }
 
@@ -429,5 +471,23 @@
   .modalContent {
     margin: 1rem;
     padding: 1.5rem;
+  }
+
+  .categoryItem {
+    padding: 0.75rem;
+  }
+
+  .categoryInfo h3 {
+    font-size: 1rem;
+  }
+
+  .editButton,
+  .deleteButton {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .buttonIcon {
+    font-size: 1rem;
   }
 }

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../../reducers/authSlice";
 import { RootState, AppDispatch } from "../../../store";
+import { scrollToTop } from "../../../utils/scroll";
 import {
   FaShoppingCart,
   FaUser,
@@ -40,6 +41,7 @@ const Header: React.FC = () => {
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
+    scrollToTop();
   };
 
   useEffect(() => {

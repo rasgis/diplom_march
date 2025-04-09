@@ -8,6 +8,7 @@ import {
 import Layout from "./components/Layout/Layout";
 import { useAppSelector } from "./hooks";
 import { ROUTES } from "./constants/routes";
+import { ScrollToTop } from "./utils/scroll";
 import "./styles/global.css";
 
 // Pages
@@ -47,6 +48,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 const App: React.FC = () => {
   return (
     <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <ScrollToTop />
       <div className="app">
         <Layout>
           <Routes>

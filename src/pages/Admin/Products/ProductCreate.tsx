@@ -43,8 +43,9 @@ const ProductCreate: React.FC = () => {
       let finalImagePath = imagePath || "";
 
       if (imageFile) {
-        finalImagePath = await fileService.saveImage(imageFile);
+        finalImagePath = await fileService.saveImage(imageFile, "product");
         console.log("Image uploaded successfully:", finalImagePath);
+        formData.image = finalImagePath;
       }
 
       const productData = {

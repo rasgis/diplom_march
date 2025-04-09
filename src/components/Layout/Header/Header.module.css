@@ -882,3 +882,9 @@
     font-size: 0.75rem;
   }
 }
+
+@media (max-width: 1045px) and (min-width: 765px) {
+  .leftSection {
+    display: none;
+  }
+}

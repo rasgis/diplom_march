@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { WeatherWidget } from "../../components/WeatherWidget";
 import {
@@ -11,39 +11,15 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import styles from "./Home.module.css";
+import { partners } from "../../constants/partners";
 
 const Home: React.FC = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
 
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    message: "",
-  });
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Здесь будет логика отправки формы
-    console.log("Form submitted:", formData);
-    setIsSubmitted(true);
-    setFormData({
-      name: "",
-      phone: "",
-      message: "",
-    });
+  const handlePartnerClick = (url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -126,54 +102,59 @@ const Home: React.FC = () => {
         </p>
       </section>
 
-      <section className={styles.contact}>
-        <h2>Свяжитесь с нами</h2>
-        {isSubmitted ? (
-          <div className={styles.successMessage}>
-            <p>
-              Спасибо за ваше сообщение! Мы свяжемся с вами в ближайшее время.
-            </p>
-          </div>
-        ) : (
-          <form className={styles.contactForm} onSubmit={handleSubmit}>
-            <div className={styles.formGroup}>
-              <label htmlFor="name">Ваше имя</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
+      <section className={styles.materialsStore}>
+        <h3>Магазин строительных материалов для строительства и ремонта</h3>
+        <p>
+          Магазин Stroy City предлагает купить строительные материалы в г.
+          Владикавказ для ремонта и строительства. Мы сотрудничаем с ведущими
+          производителями кровельных, фасадных материалов и сопутствующих
+          товаров.
+        </p>
+      </section>
+
+      <section className={styles.qualityAssurance}>
+        <h3>Гарантия качества</h3>
+        <p>
+          Наш магазин поставляет материалы для строительства в любых количествах
+          по доступным ценам, с гарантией качества от производителя. Нашими
+          покупателями являются частные покупатели, крупные фирмы, торговые
+          сети, а так же производства и офисные центры.
+        </p>
+      </section>
+
+      <section className={styles.trustAndExperience}>
+        <h3>Доверие и опыт</h3>
+        <p>
+          Вдумчивая серьезная работа (более 20 лет на рынке) дала свои
+          результаты, и теперь наш клиент может быть уверен в том, что он сможет
+          купить только проверенные годами строительные материалы, качество
+          которых подтверждено сертификатами.
+        </p>
+      </section>
+
+      <section className={styles.partners}>
+        <h2>Наши партнеры</h2>
+        <p>
+          Мы сотрудничаем с ведущими производителями строительных материалов,
+          что позволяет нам предлагать нашим клиентам только качественную
+          продукцию по конкурентным ценам.
+        </p>
+        <div className={styles.partnersGrid}>
+          {partners.map((partner) => (
+            <div
+              key={partner.id}
+              className={styles.partnerLogoContainer}
+              onClick={() => handlePartnerClick(partner.url)}
+              title={partner.name}
+            >
+              <img
+                src={`/${String(partner.id).padStart(2, "0")}.png`}
+                alt={partner.name}
+                className={styles.partnerLogo}
               />
             </div>
-            <div className={styles.formGroup}>
-              <label htmlFor="phone">Телефон</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label htmlFor="message">Сообщение</label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                rows={4}
-                placeholder="Введите ваше сообщение"
-              ></textarea>
-            </div>
-            <button type="submit" className={styles.submitButton}>
-              ОТПРАВИТЬ
-            </button>
-          </form>
-        )}
+          ))}
+        </div>
       </section>
     </div>
   );

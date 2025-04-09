@@ -27,7 +27,12 @@ const getCategoryById = asyncHandler(async (req, res) => {
 // @route   POST /api/categories
 // @access  Private/Admin
 const createCategory = asyncHandler(async (req, res) => {
-  const { name, image, parentId, slug, order } = req.body;
+  const { name, parentId, slug, order } = req.body;
+
+  // Получаем путь к загруженному файлу из multer
+  const image = req.file
+    ? `/uploads/categories/${req.file.filename}`
+    : req.body.image;
 
   const categoryExists = await Category.findOne({ name });
 
@@ -56,7 +61,12 @@ const createCategory = asyncHandler(async (req, res) => {
 // @route   PUT /api/categories/:id
 // @access  Private/Admin
 const updateCategory = asyncHandler(async (req, res) => {
-  const { name, description, image } = req.body;
+  const { name, description } = req.body;
+
+  // Получаем путь к загруженному файлу из multer
+  const image = req.file
+    ? `/uploads/categories/${req.file.filename}`
+    : req.body.image;
 
   const category = await Category.findById(req.params.id);
 

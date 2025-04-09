@@ -83,7 +83,7 @@ const ProductEdit: React.FC = () => {
 
       if (imageFile) {
         console.log("Uploading image:", imageFile);
-        finalImagePath = await fileService.saveImage(imageFile);
+        finalImagePath = await fileService.saveImage(imageFile, "product");
         console.log("Image uploaded successfully:", finalImagePath);
       }
 

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 /**
  * Функция для плавного скролла страницы вверх
@@ -18,4 +19,18 @@ export const scrollToTop = (
  */
 export const useScrollTop = (): void => {
   scrollToTop();
+};
+
+/**
+ * Компонент для автоматического скролла страницы вверх при изменении маршрута
+ * Используется в корневом компоненте App.tsx или Layout
+ */
+export const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
 };

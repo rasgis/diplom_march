@@ -4,7 +4,7 @@ import { authService } from "./authService";
 import { optimizeImage } from "../utils/imageUtils";
 
 export const fileService = {
-  async saveImage(file: File): Promise<string> {
+  async saveImage(file: File, type?: "product" | "category"): Promise<string> {
     try {
       const token = authService.getToken();
       if (!token) {
@@ -29,11 +29,12 @@ export const fileService = {
         Authorization: `Bearer ${token}`,
       };
 
-      const response = await axios.post(
-        `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.FILES.UPLOAD}`,
-        formData,
-        { headers }
-      );
+      // Добавляем параметр типа загрузки в URL, если он предоставлен
+      const url = type
+        ? `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.FILES.UPLOAD}?type=${type}`
+        : `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.FILES.UPLOAD}`;
+
+      const response = await axios.post(url, formData, { headers });
 
       if (!response.data.filePath) {
         throw new Error("Не получен путь к файлу от сервера");
