@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import ScrollTop from "../ScrollTop/ScrollTop";
-import { scrollToTop } from "../../utils/scroll";
 import styles from "./Layout.module.css";
 
 interface LayoutProps {
