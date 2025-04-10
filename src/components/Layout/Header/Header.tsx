@@ -66,7 +66,7 @@ const Header: React.FC = () => {
               onClick={closeMobileMenu}
             >
               <img
-                src="/logo-stroy.jpg"
+                src="/logo-stroy.png"
                 alt="StroyCity Logo"
                 className={styles.logo}
               />

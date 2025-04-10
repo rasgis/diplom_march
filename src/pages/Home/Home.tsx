@@ -40,7 +40,7 @@ const Home: React.FC = () => {
       <section className={styles.hero}>
         <div className={styles.logoContainer}>
           <img
-            src="/logo-stroy.jpg"
+            src="/logo-stroy.png"
             alt="Stroy City Logo"
             className={styles.logo}
           />
