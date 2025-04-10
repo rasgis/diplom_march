@@ -17,32 +17,14 @@ const Home: React.FC = () => {
   const isAuthenticated = useSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
-  const [glowingIndices, setGlowingIndices] = useState<Set<number>>(new Set());
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   useEffect(() => {
-    // Функция для случайного включения/выключения логотипа
-    const toggleRandomLogo = () => {
-      const randomIndex = Math.floor(Math.random() * partners.length);
-      setGlowingIndices((prev) => {
-        const newSet = new Set(prev);
-        if (newSet.has(randomIndex)) {
-          newSet.delete(randomIndex);
-        } else {
-          newSet.add(randomIndex);
-        }
-        return newSet;
-      });
-    };
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % partners.length);
+    }, 2000); // Переход к следующему логотипу каждые 2 секунды
 
-    // Создаем несколько интервалов с разной частотой
-    const intervals = [
-      setInterval(toggleRandomLogo, 800), // Быстрый интервал
-      setInterval(toggleRandomLogo, 1200), // Средний интервал
-      setInterval(toggleRandomLogo, 1500), // Медленный интервал
-    ];
-
-    // Очистка всех интервалов при размонтировании
-    return () => intervals.forEach((interval) => clearInterval(interval));
+    return () => clearInterval(interval);
   }, []);
 
   const handlePartnerClick = (url: string) => {
@@ -178,7 +160,7 @@ const Home: React.FC = () => {
                 src={`/${String(partner.id).padStart(2, "0")}.png`}
                 alt={partner.name}
                 className={`${styles.partnerLogo} ${
-                  glowingIndices.has(index) ? styles.glowing : ""
+                  index === currentIndex ? styles.glowing : ""
                 }`}
               />
             </div>
