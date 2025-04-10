@@ -116,7 +116,11 @@
 }
 
 .navButton:hover {
-  background: white;
+  background: radial-gradient(
+    circle,
+    rgba(11, 188, 156, 0.8) 30%,
+    rgba(11, 224, 184, 0.2) 110%
+  );
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
   transform: translateY(-50%) scale(1.1);
 }
