@@ -125,6 +125,11 @@
   transform: translateY(-50%) scale(1.1);
 }
 
+.navButton:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .prevButton {
   left: 20px;
 }
