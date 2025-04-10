@@ -36,6 +36,7 @@ const Home: React.FC = () => {
   return (
     <div className={styles.container}>
       <WeatherWidget />
+      <Slider slides={sliderData} autoPlayInterval={5000} />
       <section className={styles.hero}>
         <div className={styles.logoContainer}>
           <img
@@ -82,7 +83,7 @@ const Home: React.FC = () => {
           </Link>
         </section>
       )}
-      <Slider slides={sliderData} autoPlayInterval={5000} />
+
       <section className={styles.features}>
         <div className={styles.feature}>
           <h3>Широкий выбор</h3>

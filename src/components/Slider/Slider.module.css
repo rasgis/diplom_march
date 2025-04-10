@@ -4,7 +4,7 @@
   height: 500px;
   overflow: hidden;
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(11, 224, 184, 0.2);
   margin: 20px 0;
   background: #000;
 }
@@ -92,7 +92,11 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%) scale(0.9);
-  background: rgba(255, 255, 255, 0.9);
+  background: radial-gradient(
+    circle,
+    rgba(11, 188, 156, 0.7) 20%,
+    rgba(11, 224, 184, 0) 100%
+  );
   border: none;
   width: 44px;
   height: 44px;
@@ -127,14 +131,14 @@
 
 .dots {
   position: absolute;
-  bottom: 25px;
+  bottom: 5px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   gap: 10px;
   z-index: 2;
   padding: 12px 20px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(11, 188, 156, 0.1);
   border-radius: 30px;
   backdrop-filter: blur(4px);
 }
@@ -143,7 +147,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.8);
+  border: 2px solid rgba(11, 188, 156, 0.8);
   background: transparent;
   padding: 0;
   cursor: pointer;
@@ -151,12 +155,12 @@
 }
 
 .dot:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(11, 188, 156, 0.5);
   transform: scale(1.1);
 }
 
 .activeDot {
-  background: white;
+  background: #0be0b8;
   transform: scale(1.2);
   border-color: white;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
