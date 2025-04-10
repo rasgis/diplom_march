@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { WeatherWidget } from "../../components/WeatherWidget";
+import Slider from "../../components/Slider/Slider";
+import { sliderData } from "../../constants/sliderData";
 import {
   LocalOffer,
   PersonAdd,
@@ -22,7 +24,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % partners.length);
-    }, 2000); // Переход к следующему логотипу каждые 2 секунды
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);
@@ -80,7 +82,7 @@ const Home: React.FC = () => {
           </Link>
         </section>
       )}
-
+      <Slider slides={sliderData} autoPlayInterval={5000} />
       <section className={styles.features}>
         <div className={styles.feature}>
           <h3>Широкий выбор</h3>
