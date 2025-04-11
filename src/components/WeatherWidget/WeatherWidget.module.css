@@ -108,9 +108,10 @@
 .location h2 {
   margin: 0 0 15px 0;
   font-size: 1.3rem;
-  text-align: center;
+  text-align: left;
   color: #0be0b8;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding-left: 0;
 }
 
 .weatherInfo {
@@ -340,19 +341,234 @@
 .refreshButton {
   background: transparent;
   border: none;
-  color: rgba(212, 255, 234, 0.7);
+  color: #0be0b8;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  padding: 4px 8px;
+  padding: 0;
   border-radius: 50%;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 10px;
+  right: 10px;
+  border: 1px solid rgba(11, 188, 156, 0.3);
+  width: 32px;
+  height: 32px;
+  z-index: 20;
+  overflow: visible;
+}
+
+.refreshButton::after {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  z-index: -1;
+  cursor: pointer;
 }
 
 .refreshButton:hover {
   color: #0be0b8;
   transform: rotate(180deg);
+  background: rgba(11, 188, 156, 0.1);
+}
+
+.refreshButton:active {
+  transform: scale(0.95);
+  background: rgba(11, 188, 156, 0.2);
+}
+
+/* Отменяем поворот при активном состоянии, чтобы он не конфликтовал с масштабированием */
+.refreshButton:hover:active {
+  transform: scale(0.95);
+}
+
+.cityEditForm {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+.cityInput {
+  width: 100%;
+  padding: 8px 35px 8px 12px;
+  border: 1px solid rgba(11, 188, 156, 0.3);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  background: rgba(29, 30, 36, 0.8);
+  color: white;
+}
+
+.cityInput:focus {
+  outline: none;
+  border-color: #0be0b8;
+  box-shadow: 0 0 0 2px rgba(11, 188, 156, 0.2);
+}
+
+.searchButton {
+  position: absolute;
+  right: 5px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #0be0b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.searchButton:hover {
+  transform: scale(1.1);
+  color: #0be0b8;
+}
+
+.cityDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  padding-left: 55px;
+}
+
+.editCityButton {
+  position: absolute;
+  left: 30px;
+  top: 5%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(11, 188, 156, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 3px;
+}
+
+.editCityButton:hover {
+  transform: scale(1.1);
+  color: #0be0b8;
+}
+
+.forecastButton {
+  position: absolute;
+  left: 5px;
+  top: 5%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(11, 188, 156, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 3px;
+}
+
+.forecastButton:hover {
+  transform: scale(1.1);
+  color: #0be0b8;
+}
+
+.forecastContainer {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(11, 188, 156, 0.2);
+  width: 100%;
+  animation: fadeIn 0.5s ease;
+}
+
+.forecastHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.forecastHeader h3 {
+  margin: 0;
+  color: #0be0b8;
+  font-size: 1rem;
+}
+
+.closeButton {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  line-height: 1;
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  color: #0be0b8;
+}
+
+.forecastList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(11, 188, 156, 0.5) rgba(29, 30, 36, 0.8);
+}
+
+.forecastList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.forecastList::-webkit-scrollbar-track {
+  background: rgba(29, 30, 36, 0.8);
+  border-radius: 3px;
+}
+
+.forecastList::-webkit-scrollbar-thumb {
+  background: rgba(11, 188, 156, 0.5);
+  border-radius: 3px;
+}
+
+.forecastDay {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  align-items: center;
+  padding: 6px 8px;
+  background: rgba(42, 43, 51, 0.5);
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.forecastDay:hover {
+  background: rgba(11, 188, 156, 0.1);
+}
+
+.forecastDate {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.forecastTemp {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #0be0b8;
+}
+
+.forecastCondition {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: right;
 }
