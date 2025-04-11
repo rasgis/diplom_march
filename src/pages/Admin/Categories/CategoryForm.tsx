@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Category } from "../../../types/category";
-import ImageUpload from "../../../components/ImageUpload/ImageUpload";
-import { fileService } from "../../../services/fileService";
 import styles from "./CategoryForm.module.css";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import * as Yup from "yup";
+import { useFormik } from "formik";
 
 interface CategoryFormProps {
   category?: Category;
@@ -16,36 +16,14 @@ interface CategoryFormProps {
   onCancel: () => void;
 }
 
-// Компонент для рекурсивного отображения категорий
-const CategoryOption: React.FC<{
-  category: Category;
-  level: number;
-  currentCategoryId?: string;
-}> = ({ category, level, currentCategoryId }) => {
-  // Пропускаем текущую категорию и её подкатегории при редактировании
-  if (currentCategoryId && category._id === currentCategoryId) {
-    return null;
-  }
-
-  const prefix = "\u00A0".repeat(level * 4);
-  return (
-    <>
-      <option value={category._id}>
-        {prefix}
-        {level > 0 ? "— " : ""}
-        {category.name}
-      </option>
-      {category.children?.map((child) => (
-        <CategoryOption
-          key={`option-${child._id}`}
-          category={child}
-          level={level + 1}
-          currentCategoryId={currentCategoryId}
-        />
-      ))}
-    </>
-  );
-};
+const validationSchema = Yup.object({
+  name: Yup.string().required("Название категории обязательно"),
+  description: Yup.string(),
+  image: Yup.string()
+    .required("URL изображения обязателен")
+    .url("Введите корректный URL изображения"),
+  parentId: Yup.string(),
+});
 
 const CategoryForm: React.FC<CategoryFormProps> = ({
   category,
@@ -54,151 +32,119 @@ const CategoryForm: React.FC<CategoryFormProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const [name, setName] = useState("");
-  const [selectedParentId, setSelectedParentId] = useState<string | undefined>(
-    parentId
-  );
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePath, setImagePath] = useState<string | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (category) {
-      setName(category.name);
-      setSelectedParentId(category.parentId);
-      setImagePath(category.image || undefined);
-    }
-  }, [category]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      let finalImagePath = imagePath || "";
-
-      if (image && typeof image !== "string") {
-        finalImagePath = await fileService.saveImage(image, "category");
-      }
-
-      const categoryData = {
-        name,
-        image: finalImagePath,
-        slug: name.toLowerCase().replace(/\s+/g, "-"),
-        order: category?.order || 0,
-        parentId: selectedParentId || undefined,
-      };
-
-      onSubmit(categoryData);
-    } catch (error) {
-      console.error("Error saving category:", error);
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Произошла ошибка при сохранении категории"
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleImageSelect = (file: File) => {
-    setImage(file);
-  };
-
-  // Фильтруем категории, чтобы исключить текущую категорию и её подкатегории
-  const buildCategoryTree = (categories: Category[]): Category[] => {
-    const categoryMap = new Map<string, Category>();
-    categories.forEach((category) => {
-      if (category._id) {
-        categoryMap.set(category._id, { ...category, children: [] });
-      }
-    });
-
-    const rootCategories: Category[] = [];
-    categories.forEach((category) => {
-      if (category.parentId) {
-        const parent = categoryMap.get(category.parentId);
-        if (parent && category._id) {
-          parent.children = parent.children || [];
-          parent.children.push(categoryMap.get(category._id)!);
-        }
-      } else if (category._id) {
-        rootCategories.push(categoryMap.get(category._id)!);
-      }
-    });
-
-    return rootCategories;
-  };
-
-  const categoryTree = buildCategoryTree(categories);
+  const formik = useFormik({
+    initialValues: {
+      name: category?.name || "",
+      description: category?.description || "",
+      image: category?.image || "",
+      parentId: parentId || category?.parentId || "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      onSubmit(values);
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form onSubmit={formik.handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
         <label htmlFor="name">Название категории</label>
         <input
           id="name"
+          name="name"
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-          className={styles.input}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.name}
+          className={
+            formik.touched.name && formik.errors.name ? styles.error : ""
+          }
         />
+        {formik.touched.name && formik.errors.name && (
+          <div className={styles.errorMessage}>{formik.errors.name}</div>
+        )}
+      </div>
+
+      <div className={styles.formGroup}>
+        <label htmlFor="description">Описание</label>
+        <textarea
+          id="description"
+          name="description"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.description}
+          className={
+            formik.touched.description && formik.errors.description
+              ? styles.error
+              : ""
+          }
+        />
+        {formik.touched.description && formik.errors.description && (
+          <div className={styles.errorMessage}>{formik.errors.description}</div>
+        )}
+      </div>
+
+      <div className={styles.formGroup}>
+        <label htmlFor="image">URL изображения</label>
+        <input
+          id="image"
+          name="image"
+          type="url"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.image}
+          className={
+            formik.touched.image && formik.errors.image ? styles.error : ""
+          }
+          placeholder="https://example.com/image.jpg"
+        />
+        {formik.touched.image && formik.errors.image && (
+          <div className={styles.errorMessage}>{formik.errors.image}</div>
+        )}
+        {formik.values.image && (
+          <div className={styles.imagePreview}>
+            <img src={formik.values.image} alt="Предпросмотр" />
+          </div>
+        )}
       </div>
 
       <div className={styles.formGroup}>
         <label htmlFor="parentId">Родительская категория</label>
         <select
           id="parentId"
-          value={selectedParentId || ""}
-          onChange={(e) => setSelectedParentId(e.target.value || undefined)}
-          className={styles.select}
+          name="parentId"
+          onChange={formik.handleChange}
+          value={formik.values.parentId}
+          className={
+            formik.touched.parentId && formik.errors.parentId
+              ? styles.error
+              : ""
+          }
         >
-          <option value="">Нет</option>
-          {categoryTree.map((cat) => (
-            <CategoryOption
-              key={`option-root-${cat._id}`}
-              category={cat}
-              level={0}
-              currentCategoryId={category?._id}
-            />
-          ))}
+          <option value="">Нет (корневая категория)</option>
+          {categories
+            .filter((cat) => cat._id !== category?._id)
+            .map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.name}
+              </option>
+            ))}
         </select>
+        {formik.touched.parentId && formik.errors.parentId && (
+          <div className={styles.errorMessage}>{formik.errors.parentId}</div>
+        )}
       </div>
 
-      <div className={styles.formGroup}>
-        <label>Изображение</label>
-        <ImageUpload
-          onImageSelect={handleImageSelect}
-          currentImage={category?.image}
-          maxWidth={600}
-          maxHeight={600}
-          quality={0.75}
-        />
-      </div>
-
-      {error && <div className={styles.error}>{error}</div>}
-
-      <div className={styles.actions}>
+      <div className={styles.formActions}>
         <button
           type="button"
           onClick={onCancel}
           className={styles.cancelButton}
-          disabled={isLoading}
         >
-          <CancelIcon fontSize="small" className={styles.buttonIcon} />
-          Отмена
+          <CancelIcon /> Отмена
         </button>
-        <button
-          type="submit"
-          className={styles.submitButton}
-          disabled={isLoading}
-        >
-          <SaveIcon fontSize="small" className={styles.buttonIcon} />
-          {isLoading ? "Сохранение..." : "Сохранить"}
+        <button type="submit" className={styles.submitButton}>
+          <SaveIcon /> {category ? "Сохранить изменения" : "Создать категорию"}
         </button>
       </div>
     </form>

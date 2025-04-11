@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import { useAppDispatch } from "../../hooks";
 import { removeFromCart, updateQuantity } from "../../reducers/cartSlice";
 import { CartItem as CartItemType } from "../../types";
-import styles from "./CartItem.module.css";
+import { DeleteConfirmationModal } from "../DeleteConfirmationModal/DeleteConfirmationModal";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
-import DeleteConfirmationModal from "../DeleteConfirmationModal/DeleteConfirmationModal";
+import styles from "./CartItem.module.css";
 
 interface CartItemProps {
   item: CartItemType;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ item }) => {
+export const CartItem: React.FC<CartItemProps> = ({ item }) => {
   const dispatch = useAppDispatch();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -76,5 +76,3 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
     </>
   );
 };
-
-export default CartItem;

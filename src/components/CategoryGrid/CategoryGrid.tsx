@@ -1,5 +1,5 @@
 import React from "react";
-import CategoryCard from "../CategoryCard/CategoryCard";
+import { CategoryCard } from "../CategoryCard/CategoryCard";
 import { Category } from "../../types";
 import styles from "./CategoryGrid.module.css";
 

@@ -3,12 +3,11 @@ import { Container, Typography, Box, Grid, Pagination } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchProducts } from "../../reducers/productSlice";
 import ProductCard from "../../components/ProductCard/ProductCard";
-import SearchBar from "../../components/SearchBar";
-import Loader from "../../components/Loader";
+import { SearchBar, Loader } from "../../components";
 import styles from "./AllProducts.module.css";
 import { scrollToTop } from "../../utils/scroll";
 
-const ITEMS_PER_PAGE = 20; // Количество товаров на странице
+const ITEMS_PER_PAGE = 12; // Количество товаров на странице
 
 const AllProducts: React.FC = () => {
   const dispatch = useAppDispatch();

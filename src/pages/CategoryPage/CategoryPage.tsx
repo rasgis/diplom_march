@@ -12,7 +12,7 @@ import { fetchCategories } from "../../reducers/categorySlice";
 import { fetchProducts } from "../../reducers/productSlice";
 import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
 import ProductCard from "../../components/ProductCard/ProductCard";
-import Loader from "../../components/Loader";
+import { Loader } from "../../components";
 import { ROUTES } from "../../constants/routes";
 import { Category, Product } from "../../types";
 import { categoryService } from "../../services/categoryService";

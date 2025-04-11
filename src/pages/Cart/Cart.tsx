@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { clearCart } from "../../reducers/cartSlice";
-import CartItem from "../../components/CartItem/CartItem";
-import DeleteConfirmationModal from "../../components/DeleteConfirmationModal/DeleteConfirmationModal";
+import { CartItem } from "../../components";
+import { DeleteConfirmationModal } from "../../components/DeleteConfirmationModal/DeleteConfirmationModal";
 import styles from "./Cart.module.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";

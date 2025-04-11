@@ -9,7 +9,7 @@ interface CategoryCardProps {
   category: Category;
 }
 
-const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
+export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const handleClick = () => {
     scrollToTop();
   };
@@ -29,5 +29,3 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
     </Link>
   );
 };
-
-export default CategoryCard;

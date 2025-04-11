@@ -3,7 +3,7 @@ import { Container, Typography, Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux";
 import { fetchCategories } from "../../reducers/categorySlice";
 import CategoryGrid from "../../components/CategoryGrid/CategoryGrid";
-import Loader from "../../components/Loader";
+import { Loader } from "../../components";
 import { categoryService } from "../../services/categoryService";
 import styles from "./ProductCatalog.module.css";
 import { scrollToTop } from "../../utils/scroll";

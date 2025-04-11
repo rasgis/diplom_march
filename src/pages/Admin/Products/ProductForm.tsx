@@ -14,7 +14,6 @@ import styles from "./Admin.module.css";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { Product, ProductFormData, Category } from "../../../types";
-import ImageUpload from "../../../components/ImageUpload/ImageUpload";
 import { categoryService } from "../../../services/categoryService";
 
 // Добавляем список единиц измерения
@@ -31,6 +30,19 @@ const UNITS_OF_MEASURE = [
   { value: "пал", label: "Паллета" },
   { value: "компл", label: "Комплект" },
 ];
+
+const validationSchema = Yup.object({
+  name: Yup.string().required("Название обязательно"),
+  description: Yup.string().required("Описание обязательно"),
+  price: Yup.number()
+    .required("Цена обязательна")
+    .min(0, "Цена не может быть отрицательной"),
+  category: Yup.string().required("Категория обязательна"),
+  image: Yup.string()
+    .required("URL изображения обязателен")
+    .url("Введите корректный URL изображения"),
+  unitOfMeasure: Yup.string().required("Единица измерения обязательна"),
+});
 
 interface ProductFormProps {
   product?: Product;
@@ -111,49 +123,23 @@ const ProductForm: React.FC<ProductFormProps> = ({
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const validationSchema = Yup.object({
-    name: Yup.string().required("Название обязательно"),
-    description: Yup.string().required("Описание обязательно"),
-    price: Yup.number()
-      .required("Цена обязательна")
-      .min(0, "Цена не может быть отрицательной"),
-    category: Yup.string().required("Категория обязательна"),
-    image: Yup.mixed().required("Изображение обязательно"),
-    unitOfMeasure: Yup.string().required("Единица измерения обязательна"),
-  });
-
-  const formik = useFormik<ProductFormData>({
+  const formik = useFormik({
     initialValues: {
       name: product?.name || "",
       description: product?.description || "",
       price: product?.price || 0,
-      category: getProductCategoryId(product),
+      category:
+        typeof product?.category === "object"
+          ? product.category._id
+          : product?.category || "",
       image: product?.image || "",
-      unitOfMeasure: product?.unitOfMeasure || "",
+      unitOfMeasure: product?.unitOfMeasure || "шт",
     },
     validationSchema,
     onSubmit: async (values) => {
-      // Создаем новый объект с File вместо base64 строки
-      const submitData = {
-        ...values,
-        image: selectedFile || values.image,
-      };
-      await onSubmit(submitData);
+      await onSubmit(values);
     },
   });
-
-  // Функция для получения ID категории из продукта
-  function getProductCategoryId(product?: Product) {
-    if (!product) return "";
-
-    // Если category - объект, извлекаем _id
-    if (typeof product.category === "object" && product.category !== null) {
-      return (product.category as { _id: string })._id;
-    }
-
-    // Иначе возвращаем как есть (строка)
-    return product.category || "";
-  }
 
   useEffect(() => {
     if (isEdit && id) {
@@ -171,9 +157,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
     reader.readAsDataURL(file);
   };
 
-  // Получаем категории в виде плоского списка с уровнями вложенности
-  const flatCategories = categoryService.getAllCategoriesFlat(categories);
-
   if (loading) {
     return <div className={styles.loading}>Загрузка...</div>;
   }
@@ -185,12 +168,13 @@ const ProductForm: React.FC<ProductFormProps> = ({
   return (
     <form onSubmit={formik.handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
-        <label htmlFor="name">Название</label>
+        <label htmlFor="name">Название товара</label>
         <input
           id="name"
           name="name"
           type="text"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           value={formik.values.name}
           className={
             formik.touched.name && formik.errors.name ? styles.error : ""
@@ -207,6 +191,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
           id="description"
           name="description"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           value={formik.values.description}
           className={
             formik.touched.description && formik.errors.description
@@ -225,7 +210,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
           id="price"
           name="price"
           type="number"
+          step="0.01"
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           value={formik.values.price}
           className={
             formik.touched.price && formik.errors.price ? styles.error : ""
@@ -237,12 +224,37 @@ const ProductForm: React.FC<ProductFormProps> = ({
       </div>
 
       <div className={styles.formGroup}>
+        <label htmlFor="image">URL изображения</label>
+        <input
+          id="image"
+          name="image"
+          type="url"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.image}
+          className={
+            formik.touched.image && formik.errors.image ? styles.error : ""
+          }
+          placeholder="https://example.com/image.jpg"
+        />
+        {formik.touched.image && formik.errors.image && (
+          <div className={styles.errorMessage}>{formik.errors.image}</div>
+        )}
+        {formik.values.image && (
+          <div className={styles.imagePreview}>
+            <img src={formik.values.image} alt="Предпросмотр" />
+          </div>
+        )}
+      </div>
+
+      <div className={styles.formGroup}>
         <label htmlFor="category">Категория</label>
         <select
           id="category"
           name="category"
           onChange={formik.handleChange}
-          value={formik.values.category as string}
+          onBlur={formik.handleBlur}
+          value={formik.values.category}
           className={
             formik.touched.category && formik.errors.category
               ? styles.error
@@ -250,15 +262,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
           }
         >
           <option value="">Выберите категорию</option>
-          {flatCategories.map((cat) => (
-            <option
-              key={cat.id}
-              value={cat.id}
-              style={{ paddingLeft: `${cat.level * 20}px` }}
-            >
-              {"\u00A0".repeat(cat.level * 2)}
-              {cat.isParent ? "📁 " : "📄 "}
-              {cat.name}
+          {categories.map((category: Category) => (
+            <option key={category._id} value={category._id}>
+              {category.name}
             </option>
           ))}
         </select>
@@ -294,29 +300,16 @@ const ProductForm: React.FC<ProductFormProps> = ({
         )}
       </div>
 
-      <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-        <label htmlFor="image">Изображение</label>
-        <ImageUpload
-          onImageSelect={handleImageSelect}
-          currentImage={product?.image}
-        />
-        {formik.touched.image && formik.errors.image && (
-          <div className={styles.errorMessage}>{formik.errors.image}</div>
-        )}
-      </div>
-
-      <div className={`${styles.formActions} ${styles.fullWidth}`}>
+      <div className={styles.formActions}>
         <button
           type="button"
-          className={styles.cancelButton}
           onClick={onCancel}
+          className={styles.cancelButton}
         >
-          <CancelIcon fontSize="small" className={styles.buttonIcon} />
-          Отмена
+          <CancelIcon /> Отмена
         </button>
         <button type="submit" className={styles.submitButton}>
-          <SaveIcon fontSize="small" className={styles.buttonIcon} />
-          {product ? "Сохранить" : "Добавить"}
+          <SaveIcon /> {product ? "Сохранить изменения" : "Создать товар"}
         </button>
       </div>
     </form>

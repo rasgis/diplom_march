@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
-import ScrollTop from "../ScrollTop/ScrollTop";
+import { ScrollTop } from "../ScrollTop/ScrollTop";
 import styles from "./Layout.module.css";
 
 interface LayoutProps {

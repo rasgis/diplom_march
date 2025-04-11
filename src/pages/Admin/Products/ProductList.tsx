@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../hooks/redux";
-import {
-  fetchProducts,
-  deleteProduct,
-  createProduct,
-  updateProduct,
-} from "../../../reducers/productSlice";
+import { fetchProducts, deleteProduct } from "../../../reducers/productSlice";
 import { fetchCategories } from "../../../reducers/categorySlice";
 import { ROUTES } from "../../../constants/routes";
-import ProductForm from "./ProductForm";
 import styles from "./Admin.module.css";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteConfirmationModal from "../../../components/DeleteConfirmationModal/DeleteConfirmationModal";
-import { Product, ProductFormData } from "../../../types";
+import { DeleteConfirmationModal } from "../../../components/DeleteConfirmationModal/DeleteConfirmationModal";
+import { Loader, EntityForm } from "../../../components";
+import { Product } from "../../../types";
 
 const ProductList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -25,201 +18,141 @@ const ProductList: React.FC = () => {
     error,
   } = useAppSelector((state) => state.products);
   const { items: categories } = useAppSelector((state) => state.categories);
-
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<string | null>(null);
-  const [productToEdit, setProductToEdit] = useState<Product | null>(null);
+  const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
 
   useEffect(() => {
     dispatch(fetchProducts());
     dispatch(fetchCategories());
   }, [dispatch]);
 
-  const handleDeleteClick = (productId: string) => {
-    setProductToDelete(productId);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleDeleteConfirm = async () => {
-    if (productToDelete) {
-      try {
-        await dispatch(deleteProduct(productToDelete)).unwrap();
-        setIsDeleteModalOpen(false);
-        setProductToDelete(null);
-      } catch (error) {
-        console.error("Error deleting product:", error);
-      }
-    }
-  };
-
-  const handleDeleteCancel = () => {
-    setIsDeleteModalOpen(false);
-    setProductToDelete(null);
-  };
-
   const handleAddClick = () => {
-    setProductToEdit(null);
+    setSelectedProduct(null);
     setIsFormModalOpen(true);
   };
 
   const handleEditClick = (product: Product) => {
-    setProductToEdit(product);
+    setSelectedProduct(product);
     setIsFormModalOpen(true);
   };
 
-  const handleFormSubmit = async (values: ProductFormData) => {
-    try {
-      if (productToEdit) {
-        console.log("Updating product with ID:", productToEdit._id);
-        console.log("Update data:", values);
-        await dispatch(
-          updateProduct({ id: productToEdit._id, product: values })
-        ).unwrap();
-        // Перезагружаем список товаров после обновления
-        dispatch(fetchProducts());
-      } else {
-        await dispatch(createProduct(values)).unwrap();
-      }
-      setIsFormModalOpen(false);
-      setProductToEdit(null);
-    } catch (error) {
-      console.error("Error saving product:", error);
+  const handleDeleteClick = (productId: string) => {
+    setDeleteProductId(productId);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteProductId) {
+      await dispatch(deleteProduct(deleteProductId));
+      setIsDeleteModalOpen(false);
+      setDeleteProductId(null);
     }
   };
 
-  const handleFormCancel = () => {
+  const handleFormClose = () => {
     setIsFormModalOpen(false);
-    setProductToEdit(null);
+    setSelectedProduct(null);
   };
 
-  // Функция для получения названия категории по ID
-  const getCategoryName = (categoryId: any): string => {
-    // Проверяем, если categoryId - это объект с полем _id, берем это поле
-    const id =
-      typeof categoryId === "object" && categoryId !== null
-        ? (categoryId as { _id: string })._id
-        : categoryId;
-
-    // Если после обработки id осталось объектом или undefined, возвращаем "Неизвестная категория"
-    if (typeof id !== "string" || !id) {
-      return "Неизвестная категория";
-    }
-
-    // Поиск категории по id
-    const category = categories.find((cat) => cat._id === id);
-    return category ? category.name : "Неизвестная категория";
-  };
-
-  // Функция для получения названия продукта по ID
-  const getProductName = (productId: string) => {
-    const product = products.find((p) => p._id === productId);
-    return product ? product.name : "";
+  const handleFormSubmit = () => {
+    dispatch(fetchProducts());
   };
 
   if (loading) {
-    return <div className={styles.loading}>Загрузка...</div>;
+    return <Loader message="Загрузка списка товаров..." />;
   }
 
   if (error) {
     return <div className={styles.error}>{error}</div>;
   }
 
-  if (!products || products.length === 0) {
-    return <div className={styles.empty}>Товары не найдены</div>;
-  }
-
   return (
-    <div className={styles.adminContainer}>
+    <div className={styles.container}>
       <div className={styles.header}>
         <h2>Управление товарами</h2>
         <button onClick={handleAddClick} className={styles.addButton}>
-          <AddIcon className={styles.buttonIcon} />
+          <FaPlus className={styles.addIcon} />
           Добавить товар
         </button>
       </div>
 
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Изображение</th>
-              <th>Название</th>
-              <th>Описание</th>
-              <th>Цена</th>
-              <th>Категория</th>
-              <th>Ед. изм.</th>
-              <th>Действия</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product._id}>
-                <td>
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className={styles.productImage}
-                  />
-                </td>
-                <td>{product.name}</td>
-                <td>{product.description}</td>
-                <td>{product.price} ₽</td>
-                <td>{getCategoryName(product.category)}</td>
-                <td>{product.unitOfMeasure}</td>
-                <td>
-                  <div className={styles.actions}>
-                    <button
-                      onClick={() => handleEditClick(product)}
-                      className={styles.editButton}
-                    >
-                      <EditIcon className={styles.buttonIcon} />
-                      Редактировать
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(product._id)}
-                      className={styles.deleteButton}
-                    >
-                      <DeleteIcon className={styles.buttonIcon} />
-                      Удалить
-                    </button>
-                  </div>
-                </td>
+      {products.length === 0 ? (
+        <div className={styles.empty}>Нет товаров</div>
+      ) : (
+        <div className={styles.tableContainer}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Изображение</th>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Категория</th>
+                <th>Действия</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product._id}>
+                  <td>{product._id}</td>
+                  <td>
+                    {product.image && (
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className={styles.productImage}
+                      />
+                    )}
+                  </td>
+                  <td>{product.name}</td>
+                  <td>
+                    {product.price} ₽ / {product.unitOfMeasure}
+                  </td>
+                  <td>
+                    {typeof product.category === "object"
+                      ? product.category.name
+                      : product.category}
+                  </td>
+                  <td>
+                    <div className={styles.actions}>
+                      <button
+                        onClick={() => handleEditClick(product)}
+                        className={styles.editButton}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(product._id)}
+                        className={styles.deleteButton}
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
-        onClose={handleDeleteCancel}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
-        title="Подтверждение удаления"
-        itemName={getProductName(productToDelete || "")}
-        itemType="товар"
+        title="Удаление товара"
+        message="Вы уверены, что хотите удалить этот товар? Это действие нельзя отменить."
       />
 
-      {isFormModalOpen && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>
-                {productToEdit ? "Редактирование товара" : "Добавление товара"}
-              </h2>
-              <button className={styles.modalClose} onClick={handleFormCancel}>
-                <CloseIcon />
-              </button>
-            </div>
-            <ProductForm
-              product={productToEdit}
-              categories={categories}
-              onSubmit={handleFormSubmit}
-              onCancel={handleFormCancel}
-            />
-          </div>
-        </div>
-      )}
+      <EntityForm
+        isOpen={isFormModalOpen}
+        onClose={handleFormClose}
+        entityType="product"
+        entityData={selectedProduct}
+        afterSubmit={handleFormSubmit}
+      />
     </div>
   );
 };

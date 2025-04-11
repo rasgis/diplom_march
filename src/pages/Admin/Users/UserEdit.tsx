@@ -4,6 +4,7 @@ import { User, UserUpdateData } from "../../../types/user";
 import { userService } from "../../../services/userService";
 import UserForm from "./UserForm";
 import styles from "../Products/Admin.module.css";
+import { Loader } from "../../../components";
 
 const UserEdit = () => {
   const { id } = useParams<{ id: string }>();
@@ -57,11 +58,7 @@ const UserEdit = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className={styles.loading}>
-        <span className={styles.loadingText}>Загрузка...</span>
-      </div>
-    );
+    return <Loader message="Загрузка пользователя..." />;
   }
 
   if (!user && !isLoading) {

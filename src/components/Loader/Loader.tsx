@@ -7,7 +7,7 @@ interface LoaderProps {
   size?: number;
 }
 
-const Loader: React.FC<LoaderProps> = ({
+export const Loader: React.FC<LoaderProps> = ({
   message = "Загрузка...",
   size = 60,
 }) => {
@@ -26,5 +26,3 @@ const Loader: React.FC<LoaderProps> = ({
     </Box>
   );
 };
-
-export default Loader;

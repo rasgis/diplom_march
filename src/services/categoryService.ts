@@ -15,10 +15,15 @@ class CategoryService {
   }
 
   async getCategories(): Promise<Category[]> {
-    const response = await axios.get(`${API_URL}/categories`, {
-      headers: this.getAuthHeaders(),
-    });
-    return response.data;
+    try {
+      const response = await axios.get(`${API_URL}/categories`, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      throw new Error("Ошибка при загрузке категорий");
+    }
   }
 
   async getCategoryById(id: string): Promise<Category> {
@@ -37,26 +42,60 @@ class CategoryService {
       "_id" | "slug" | "order" | "createdAt" | "updatedAt"
     >
   ): Promise<Category> {
-    const response = await axios.post(`${API_URL}/categories`, category, {
-      headers: this.getAuthHeaders(),
-    });
-    return response.data;
+    try {
+      const response = await axios.post(`${API_URL}/categories`, category, {
+        headers: this.getAuthHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating category:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(
+          error.response.data.message || "Ошибка при создании категории"
+        );
+      }
+      throw new Error("Ошибка при создании категории");
+    }
   }
 
   async updateCategory(
     id: string,
     category: Partial<Category>
   ): Promise<Category> {
-    const response = await axios.put(`${API_URL}/categories/${id}`, category, {
-      headers: this.getAuthHeaders(),
-    });
-    return response.data;
+    try {
+      const response = await axios.put(
+        `${API_URL}/categories/${id}`,
+        category,
+        {
+          headers: this.getAuthHeaders(),
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error updating category:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(
+          error.response.data.message || "Ошибка при обновлении категории"
+        );
+      }
+      throw new Error("Ошибка при обновлении категории");
+    }
   }
 
   async deleteCategory(id: string): Promise<void> {
-    await axios.delete(`${API_URL}/categories/${id}`, {
-      headers: this.getAuthHeaders(),
-    });
+    try {
+      await axios.delete(`${API_URL}/categories/${id}`, {
+        headers: this.getAuthHeaders(),
+      });
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      if (axios.isAxiosError(error) && error.response) {
+        throw new Error(
+          error.response.data.message || "Ошибка при удалении категории"
+        );
+      }
+      throw new Error("Ошибка при удалении категории");
+    }
   }
 
   buildCategoryTree(categories: Category[]): Category[] {

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { WeatherWidget } from "../../components/WeatherWidget";
-import Slider from "../../components/Slider/Slider";
+import { WeatherWidget, Slider, AnimationText } from "../../components";
 import { sliderData } from "../../constants/sliderData";
 import {
   LocalOffer,
@@ -45,7 +44,7 @@ const Home: React.FC = () => {
             className={styles.logo}
           />
         </div>
-        <h1 className={styles.title}>Добро пожаловать в Stroy City</h1>
+        <AnimationText />
         <p className={styles.subtitle}>
           Лучшие строительные и кровельные материалы по доступным ценам
         </p>

@@ -1,132 +1,78 @@
 import React, { useState } from "react";
 import { Category } from "../../../types";
-import CategoryForm from "./CategoryForm";
 import styles from "./CategoryList.module.css";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import CloseIcon from "@mui/icons-material/Close";
-import DeleteConfirmationModal from "../../../components/DeleteConfirmationModal/DeleteConfirmationModal";
 
 interface CategoryListProps {
   categories: Category[];
-  onAdd: (
-    category: Omit<
-      Category,
-      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
-    >
-  ) => Promise<void>;
-  onEdit: (
-    id: string,
-    category: Omit<
-      Category,
-      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
-    >
-  ) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
-  onReorder: (categories: Category[]) => Promise<void>;
+  onAdd: () => void;
+  onEdit: (category: Category) => void;
+  onDelete: (categoryId: string) => void;
 }
 
 const CategoryList: React.FC<CategoryListProps> = ({
-  categories = [],
+  categories,
   onAdd,
   onEdit,
   onDelete,
-  onReorder,
 }) => {
-  const [open, setOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [deletingCategory, setDeletingCategory] = useState<Category | null>(
-    null
-  );
-  const [expandedCategories, setExpandedCategories] = useState<
-    Record<string, boolean>
-  >({});
-  const [addingToParentId, setAddingToParentId] = useState<string | undefined>(
-    undefined
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set()
   );
 
-  const handleAdd = (parentId?: string) => {
-    setEditingCategory(null);
-    setAddingToParentId(parentId);
-    setOpen(true);
-  };
+  // Построение дерева категорий
+  const buildCategoryTree = (categories: Category[]): Category[] => {
+    const categoryMap = new Map<string, Category>();
+    categories.forEach((category) => {
+      categoryMap.set(category._id, { ...category, children: [] });
+    });
 
-  const handleEdit = (category: Category) => {
-    setEditingCategory(category);
-    setOpen(true);
-  };
+    const rootCategories: Category[] = [];
+    categories.forEach((category) => {
+      if (category.parentId) {
+        const parent = categoryMap.get(category.parentId);
+        if (parent) {
+          parent.children = parent.children || [];
+          parent.children.push(categoryMap.get(category._id)!);
+        }
+      } else {
+        rootCategories.push(categoryMap.get(category._id)!);
+      }
+    });
 
-  const handleDelete = (category: Category) => {
-    setDeletingCategory(category);
-  };
-
-  const handleConfirmDelete = async () => {
-    if (deletingCategory) {
-      await onDelete(deletingCategory._id);
-      setDeletingCategory(null);
-    }
-  };
-
-  const handleCancelDelete = () => {
-    setDeletingCategory(null);
-  };
-
-  const handleSubmit = async (
-    category: Omit<
-      Category,
-      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
-    >
-  ) => {
-    if (editingCategory) {
-      await onEdit(editingCategory._id, category);
-    } else {
-      await onAdd(category);
-    }
-    setOpen(false);
+    return rootCategories;
   };
 
   const toggleExpand = (categoryId: string) => {
-    setExpandedCategories((prev) => ({
-      ...prev,
-      [categoryId]: !prev[categoryId],
-    }));
+    const newExpandedCategories = new Set(expandedCategories);
+    if (newExpandedCategories.has(categoryId)) {
+      newExpandedCategories.delete(categoryId);
+    } else {
+      newExpandedCategories.add(categoryId);
+    }
+    setExpandedCategories(newExpandedCategories);
   };
 
-  const renderCategoryRow = (category: Category, level: number = 0) => {
-    if (!category._id) {
-      console.error("Category without _id:", category);
-      return null;
-    }
-
-    const hasChildren = categories.some((c) => c.parentId === category._id);
-    const isExpanded = expandedCategories[category._id] || false;
+  const renderCategory = (category: Category, level: number = 0) => {
+    const hasChildren = category.children && category.children.length > 0;
+    const isExpanded = expandedCategories.has(category._id);
 
     return (
-      <div key={`category-${category._id}`}>
-        <div
-          className={styles.categoryItem}
-          style={{ marginLeft: `${level * 20}px` }}
-        >
-          <div className={styles.categoryInfo} data-label="Категория">
-            <div className={styles.expandButtonContainer}>
-              {hasChildren ? (
-                <button
-                  className={styles.expandButton}
-                  onClick={() => toggleExpand(category._id)}
-                >
-                  {isExpanded ? (
-                    <ExpandLessIcon fontSize="small" />
-                  ) : (
-                    <ExpandMoreIcon fontSize="small" />
-                  )}
-                </button>
-              ) : (
-                <div className={styles.expandButtonPlaceholder}></div>
-              )}
-            </div>
+      <div key={category._id} className={styles.category}>
+        <div className={styles.categoryItem}>
+          <div className={styles.categoryInfo}>
+            {hasChildren ? (
+              <button
+                className={styles.expandButton}
+                onClick={() => toggleExpand(category._id)}
+              >
+                {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+              </button>
+            ) : (
+              <div className={styles.expandButtonPlaceholder}></div>
+            )}
             {category.image && (
               <img
                 src={category.image}
@@ -136,85 +82,51 @@ const CategoryList: React.FC<CategoryListProps> = ({
             )}
             <h3>{category.name}</h3>
           </div>
-          <div className={styles.actions} data-label="Действия">
+          <div className={styles.actions}>
             <button
+              onClick={() => onEdit(category)}
               className={styles.editButton}
-              onClick={() => handleEdit(category)}
             >
-              <EditIcon fontSize="small" className={styles.buttonIcon} />
-              Редактировать
+              <FaEdit />
             </button>
             <button
+              onClick={() => onDelete(category._id)}
               className={styles.deleteButton}
-              onClick={() => handleDelete(category)}
             >
-              <DeleteIcon fontSize="small" className={styles.buttonIcon} />
-              Удалить
+              <FaTrash />
             </button>
           </div>
         </div>
-        {isExpanded && hasChildren && (
+        {hasChildren && isExpanded && (
           <div className={styles.childrenContainer}>
-            {categories
-              .filter((c) => c.parentId === category._id)
-              .map((child) => renderCategoryRow(child, level + 1))}
+            {category.children!.map((child) =>
+              renderCategory(child, level + 1)
+            )}
           </div>
         )}
       </div>
     );
   };
 
+  const categoryTree = buildCategoryTree(categories);
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1>Категории</h1>
-        <button className={styles.addButton} onClick={() => handleAdd()}>
-          <AddIcon fontSize="small" className={styles.buttonIcon} />
+        <h2>Управление категориями</h2>
+        <button onClick={() => onAdd()} className={styles.addButton}>
+          <FaPlus className={styles.addIcon} />
           Добавить категорию
         </button>
       </div>
 
       <div className={styles.list}>
-        {categories
-          .filter((category) => !category.parentId)
-          .map((category) => renderCategoryRow(category))}
+        {categoryTree.length === 0 ? (
+          <div className={styles.empty}>Нет категорий</div>
+        ) : (
+          categoryTree.map((category) => renderCategory(category))
+        )}
       </div>
-
-      {open && (
-        <div className={styles.modal}>
-          <div className={styles.modalContent}>
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>
-                {editingCategory
-                  ? "Редактировать категорию"
-                  : "Добавить категорию"}
-              </h2>
-              <button
-                className={styles.modalClose}
-                onClick={() => setOpen(false)}
-              >
-                <CloseIcon />
-              </button>
-            </div>
-            <CategoryForm
-              category={editingCategory || undefined}
-              categories={categories}
-              parentId={addingToParentId}
-              onSubmit={handleSubmit}
-              onCancel={() => setOpen(false)}
-            />
-          </div>
-        </div>
-      )}
-
-      <DeleteConfirmationModal
-        isOpen={!!deletingCategory}
-        onClose={handleCancelDelete}
-        onConfirm={handleConfirmDelete}
-        title="Подтверждение удаления"
-        itemName={deletingCategory?.name || ""}
-        itemType="категорию"
-      />
     </div>
   );
 };

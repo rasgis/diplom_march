@@ -8,10 +8,10 @@ import {
 import { fetchCategories } from "../../../reducers/categorySlice";
 import { Product } from "../../../types/product";
 import { Category } from "../../../types/category";
-import ImageUpload from "../../../components/ImageUpload/ImageUpload";
 import { fileService } from "../../../services/fileService";
 import { categoryService } from "../../../services/categoryService";
 import styles from "./Admin.module.css";
+import { Loader } from "../../../components";
 
 const ProductEdit: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -141,7 +141,7 @@ const ProductEdit: React.FC = () => {
   ];
 
   if (productLoading) {
-    return <div className={styles.loading}>Загрузка...</div>;
+    return <Loader message="Загрузка товара..." />;
   }
 
   if (!selectedProduct) {

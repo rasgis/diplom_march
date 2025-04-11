@@ -4,6 +4,7 @@ import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { User } from "../../../types/user";
 import { userService } from "../../../services/userService";
 import styles from "../Products/Admin.module.css";
+import { Loader } from "../../../components";
 
 const UserList = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -98,18 +99,17 @@ const UserList = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Управление пользователями</h1>
+        <h2>Управление пользователями</h2>
         <Link to="/admin/users/create" className={styles.addButton}>
-          <FaPlus className={styles.addIcon} /> Добавить пользователя
+          <FaPlus className={styles.addIcon} />
+          Добавить пользователя
         </Link>
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
 
       {loading ? (
-        <div className={styles.loading}>
-          <span className={styles.loadingText}>Загрузка...</span>
-        </div>
+        <Loader message="Загрузка пользователей..." />
       ) : (
         <div className={styles.tableResponsive}>
           <table className={styles.table}>

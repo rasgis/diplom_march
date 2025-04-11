@@ -11,7 +11,10 @@ interface SliderProps {
   autoPlayInterval?: number;
 }
 
-const Slider: React.FC<SliderProps> = ({ slides, autoPlayInterval = 5000 }) => {
+export const Slider: React.FC<SliderProps> = ({
+  slides,
+  autoPlayInterval = 5000,
+}) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -87,5 +90,3 @@ const Slider: React.FC<SliderProps> = ({ slides, autoPlayInterval = 5000 }) => {
     </div>
   );
 };
-
-export default Slider;

@@ -7,7 +7,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({
+export const SearchBar: React.FC<SearchBarProps> = ({
   onSearch,
   placeholder = "Поиск товаров...",
 }) => {
@@ -53,5 +53,3 @@ const SearchBar: React.FC<SearchBarProps> = ({
     </div>
   );
 };
-
-export default SearchBar;

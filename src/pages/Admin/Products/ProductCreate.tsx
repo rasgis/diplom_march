@@ -5,10 +5,8 @@ import { createProduct } from "../../../reducers/productSlice";
 import { fetchCategories } from "../../../reducers/categorySlice";
 import { Product } from "../../../types/product";
 import { Category } from "../../../types/category";
-import ImageUpload from "../../../components/ImageUpload/ImageUpload";
-import { fileService } from "../../../services/fileService";
-import { categoryService } from "../../../services/categoryService";
 import styles from "./Admin.module.css";
+import { Loader } from "../../../components";
 
 const ProductCreate: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -16,8 +14,6 @@ const ProductCreate: React.FC = () => {
   const { items: categories } = useAppSelector((state) => state.categories);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePath, setImagePath] = useState<string | undefined>(undefined);
 
   const [formData, setFormData] = useState<
     Omit<Product, "_id" | "id" | "createdAt" | "updatedAt">
@@ -40,20 +36,7 @@ const ProductCreate: React.FC = () => {
     setError(null);
 
     try {
-      let finalImagePath = imagePath || "";
-
-      if (imageFile) {
-        finalImagePath = await fileService.saveImage(imageFile, "product");
-        console.log("Image uploaded successfully:", finalImagePath);
-        formData.image = finalImagePath;
-      }
-
-      const productData = {
-        ...formData,
-        image: finalImagePath,
-      };
-
-      await dispatch(createProduct(productData)).unwrap();
+      await dispatch(createProduct(formData)).unwrap();
       navigate("/admin/products");
     } catch (error) {
       console.error("Error creating product:", error);
@@ -69,47 +52,27 @@ const ProductCreate: React.FC = () => {
 
   const handleChange = (
     e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "price" ? Number(value) : value,
+      [name]: name === "price" ? parseFloat(value) || 0 : value,
     }));
   };
 
-  const handleImageSelect = (file: File) => {
-    console.log("Image selected:", file);
-    setImageFile(file);
-  };
-
-  // Получаем категории в виде плоского списка с уровнями вложенности
-  const flatCategories = categoryService.getAllCategoriesFlat(categories);
-
-  // Список единиц измерения
-  const unitsOfMeasure = [
-    "шт",
-    "п.м.",
-    "м²",
-    "м³",
-    "кг",
-    "л",
-    "уп",
-    "компл",
-    "рул",
-    "пак",
-  ];
+  if (isLoading) {
+    return <Loader message="Создание товара..." />;
+  }
 
   return (
-    <div className={styles.adminContainer}>
-      <div className={styles.header}>
-        <h2>Создание нового товара</h2>
-      </div>
-
+    <div className={styles.container}>
+      <h2>Создание нового товара</h2>
+      {error && <div className={styles.error}>{error}</div>}
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGroup}>
-          <label htmlFor="name">Название</label>
+          <label htmlFor="name">Название товара</label>
           <input
             type="text"
             id="name"
@@ -139,10 +102,46 @@ const ProductCreate: React.FC = () => {
             name="price"
             value={formData.price}
             onChange={handleChange}
-            min="0"
             step="0.01"
+            min="0"
             required
           />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="image">URL изображения</label>
+          <input
+            type="url"
+            id="image"
+            name="image"
+            value={formData.image}
+            onChange={handleChange}
+            placeholder="https://example.com/image.jpg"
+            required
+          />
+          {formData.image && (
+            <div className={styles.imagePreview}>
+              <img src={formData.image} alt="Предпросмотр" />
+            </div>
+          )}
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="category">Категория</label>
+          <select
+            id="category"
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Выберите категорию</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className={styles.formGroup}>
@@ -154,61 +153,31 @@ const ProductCreate: React.FC = () => {
             onChange={handleChange}
             required
           >
-            {unitsOfMeasure.map((unit) => (
-              <option key={unit} value={unit}>
-                {unit}
-              </option>
-            ))}
+            <option value="">Выберите единицу измерения</option>
+            <option value="шт">Штуки</option>
+            <option value="м²">Квадратные метры</option>
+            <option value="м³">Кубические метры</option>
+            <option value="м">Метры</option>
+            <option value="кг">Килограммы</option>
+            <option value="т">Тонны</option>
+            <option value="уп">Упаковка</option>
+            <option value="рул">Рулон</option>
+            <option value="лист">Лист</option>
+            <option value="пал">Паллета</option>
+            <option value="компл">Комплект</option>
           </select>
         </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="category">Категория</label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category as string}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Выберите категорию</option>
-            {flatCategories.map((cat) => (
-              <option
-                key={cat.id}
-                value={cat.id}
-                style={{ paddingLeft: `${cat.level * 20}px` }}
-              >
-                {"\u00A0".repeat(cat.level * 2)}
-                {cat.isParent ? "📁 " : "📄 "}
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>Изображение товара</label>
-          <ImageUpload
-            onImageSelect={handleImageSelect}
-            currentImage={imagePath}
-            maxWidth={800}
-            maxHeight={800}
-            quality={0.75}
-          />
-        </div>
-
-        {error && <div className={styles.error}>{error}</div>}
 
         <div className={styles.formActions}>
           <button
             type="button"
             onClick={() => navigate("/admin/products")}
-            disabled={isLoading}
+            className={styles.cancelButton}
           >
             Отмена
           </button>
-          <button type="submit" disabled={isLoading}>
-            {isLoading ? "Сохранение..." : "Создать товар"}
+          <button type="submit" className={styles.submitButton}>
+            Создать товар
           </button>
         </div>
       </form>
