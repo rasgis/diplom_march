@@ -260,3 +260,19 @@
   max-width: 80%;
   text-align: center;
 }
+
+.description {
+  margin: 1.5rem 0;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #1d1e24, #2a2b33);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(11, 224, 184, 0.2);
+}
+
+.descriptionText {
+  color: #d4ffea;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin: 0;
+}

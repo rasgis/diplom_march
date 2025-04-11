@@ -12,18 +12,11 @@ const categorySchema = mongoose.Schema(
     },
     image: {
       type: String,
+      required: [true, "Изображение категории обязательно"],
     },
     parentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
-    },
-    slug: {
-      type: String,
-      unique: true,
-    },
-    order: {
-      type: Number,
-      default: 0,
     },
   },
   {

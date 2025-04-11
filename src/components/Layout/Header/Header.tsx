@@ -120,6 +120,39 @@ const Header: React.FC = () => {
               {mobileMenuOpen ? <FaTimes /> : <FaBars />}
             </button>
           </div>
+
+          {isAuthenticated && user?.role === "admin" && (
+            <nav className={styles.desktopAdminNav}>
+              <Link
+                to="/admin/products"
+                className={styles.adminLink}
+                onClick={closeMobileMenu}
+                title="Продукты"
+              >
+                <FaCog className={styles.adminIcon} />
+                <span className={styles.adminLinkText}>Продукты</span>
+              </Link>
+              <Link
+                to="/admin/categories"
+                className={styles.adminLink}
+                onClick={closeMobileMenu}
+                title="Категории"
+              >
+                <FaListAlt className={styles.adminIcon} />
+                <span className={styles.adminLinkText}>Категории</span>
+              </Link>
+              <Link
+                to="/admin/users"
+                className={styles.adminLink}
+                onClick={closeMobileMenu}
+                title="Пользователи"
+              >
+                <FaUsers className={styles.adminIcon} />
+                <span className={styles.adminLinkText}>Пользователи</span>
+              </Link>
+            </nav>
+          )}
+
           <div
             className={`${styles.rightSection} ${
               mobileMenuOpen ? styles.mobileMenuOpen : ""
@@ -143,27 +176,33 @@ const Header: React.FC = () => {
             </nav>
 
             {isAuthenticated && user?.role === "admin" && (
-              <nav className={styles.adminNav}>
+              <nav className={styles.mobileAdminNav}>
                 <Link
                   to="/admin/products"
                   className={styles.adminLink}
                   onClick={closeMobileMenu}
+                  title="Продукты"
                 >
-                  <FaCog /> Продукты
+                  <FaCog className={styles.adminIcon} />
+                  <span className={styles.adminLinkText}>Продукты</span>
                 </Link>
                 <Link
                   to="/admin/categories"
                   className={styles.adminLink}
                   onClick={closeMobileMenu}
+                  title="Категории"
                 >
-                  <FaListAlt /> Категории
+                  <FaListAlt className={styles.adminIcon} />
+                  <span className={styles.adminLinkText}>Категории</span>
                 </Link>
                 <Link
                   to="/admin/users"
                   className={styles.adminLink}
                   onClick={closeMobileMenu}
+                  title="Пользователи"
                 >
-                  <FaUsers /> Пользователи
+                  <FaUsers className={styles.adminIcon} />
+                  <span className={styles.adminLinkText}>Пользователи</span>
                 </Link>
               </nav>
             )}

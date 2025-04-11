@@ -23,7 +23,14 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-dotenv.config();
+// Загружаем переменные окружения из корня проекта
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
+
+// Проверяем загрузку переменных окружения
+console.log("Environment variables:");
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("PORT:", process.env.PORT);
+console.log("MONGO_URI:", process.env.MONGO_URI);
 
 const app = express();
 
@@ -31,15 +38,12 @@ const app = express();
 connectDB();
 
 // Middleware
-const clientUrl =
-  process.env.NODE_ENV === "production"
-    ? process.env.FRONTEND_URL || "https://your-vercel-app.vercel.app"
-    : "http://localhost:5173";
-
 app.use(
   cors({
-    origin: clientUrl,
+    origin: ["http://localhost:5173", "http://localhost:3000"],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -89,13 +93,11 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT || 3001;
 
-// Для локального сервера запускаем на указанном порту
-if (process.env.NODE_ENV !== "production") {
-  app.listen(PORT, () => {
-    console.log(`Сервер запущен на порту ${PORT}`);
-    console.log(`API endpoints available at http://localhost:${PORT}/api`);
-  });
-}
+// Запускаем сервер
+app.listen(PORT, () => {
+  console.log(`Сервер запущен на порту ${PORT}`);
+  console.log(`API endpoints available at http://localhost:${PORT}/api`);
+});
 
 // Для Vercel экспортируем приложение
 export default app;

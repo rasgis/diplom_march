@@ -57,7 +57,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
   justify-content: flex-end;
   min-width: 0;
   overflow: hidden;
@@ -164,7 +164,9 @@
   -ms-overflow-style: none;
   padding: 0.25rem;
   margin: 0;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
+  justify-content: center;
+  max-width: 400px;
 }
 
 .adminNav::-webkit-scrollbar {
@@ -178,14 +180,27 @@
   color: #9f5bdf;
   text-decoration: none;
   font-weight: 500;
-  padding: 8px 12px;
+  padding: 6px 8px;
   border-radius: 4px;
   background-color: transparent;
   transition: all 0.2s;
   white-space: nowrap;
   flex-shrink: 0;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   position: relative;
+  min-width: 0;
+}
+
+.adminIcon {
+  font-size: 16px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.adminLinkText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .adminLink::after {
@@ -418,77 +433,159 @@
   /* Можно добавить специфичные стили для десктопной авторизации, если нужно */
 }
 
+.mobileVisible {
+  display: flex;
+}
+
+.mobileHidden {
+  display: flex;
+}
+
+.desktopAdminNav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0.25rem;
+  margin: 0;
+  flex: 0 1 auto;
+  max-width: 400px;
+  justify-content: center;
+  min-width: 0;
+}
+
+.desktopAdminNav::-webkit-scrollbar {
+  display: none;
+}
+
+.mobileAdminNav {
+  display: none;
+}
+
 @media (max-width: 1165px) and (min-width: 769px) {
   .container {
     padding: 0.75rem;
-    gap: 0.75rem;
+    gap: 0.5rem;
   }
 
   .leftSection {
-    gap: 0.75rem;
-    flex: 0.7;
+    gap: 0.5rem;
+    flex: 0 0 auto;
   }
 
   .rightSection {
-    gap: 1rem;
+    gap: 0.5rem;
     flex: 0 1 auto;
   }
 
-  .adminNav {
-    max-width: 200px;
+  .desktopAdminNav {
+    max-width: none;
+    flex: 1 1 auto;
+    justify-content: center;
     padding: 0.15rem;
-    gap: 0.25rem;
-    margin-right: 1rem;
-    margin-left: 0;
+    gap: 0.15rem;
   }
 
   .adminLink {
-    padding: 0.3rem 0.5rem;
-    font-size: 0.85rem;
+    padding: 4px 6px;
+    font-size: 0.8rem;
+  }
+
+  .adminIcon {
+    font-size: 14px;
+    margin-right: 3px;
+  }
+
+  .adminLinkText {
+    max-width: 70px;
   }
 
   .adminLink svg {
-    font-size: 16px;
+    font-size: 14px;
   }
 
-  .cart {
-    margin-left: 0.5rem;
+  .nav {
+    flex: 0 1 auto;
+  }
+
+  .navLink {
+    padding: 4px 6px;
+    font-size: 0.8rem;
+  }
+
+  .navIcon {
+    font-size: 16px;
   }
 
   .cartLink {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.85rem;
+    padding: 4px 6px;
+    font-size: 0.8rem;
   }
 
   .cartIcon {
-    font-size: 16px;
+    font-size: 14px;
   }
 }
 
 @media (max-width: 1024px) and (min-width: 769px) {
   .container {
     padding: 0.75rem;
-    gap: 0.75rem;
+    gap: 0.35rem;
   }
 
   .leftSection {
-    flex: 0.6;
+    flex: 0 0 auto;
   }
 
   .rightSection {
-    gap: 1rem;
+    gap: 0.35rem;
     flex: 0 1 auto;
   }
 
-  .adminNav {
-    max-width: 180px;
-    margin-right: 1rem;
-    margin-left: 0;
+  .desktopAdminNav {
+    flex: 1 1 auto;
+    justify-content: center;
   }
 
   .adminLink {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.8rem;
+    padding: 3px 4px;
+    font-size: 0.75rem;
+  }
+
+  .adminIcon {
+    font-size: 12px;
+    margin-right: 2px;
+  }
+
+  .adminLinkText {
+    max-width: 60px;
+  }
+
+  .adminLink svg {
+    font-size: 12px;
+    margin-right: 2px;
+  }
+}
+
+@media (max-width: 900px) and (min-width: 769px) {
+  .adminLinkText {
+    display: none;
+  }
+
+  .adminIcon {
+    margin-right: 0;
+    font-size: 16px;
+  }
+
+  .adminLink {
+    padding: 6px;
+  }
+
+  .adminLink:hover::after {
+    width: 50%;
   }
 }
 
@@ -622,14 +719,16 @@
   }
 
   .adminNav {
-    width: 100%;
+    display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    margin: 0;
-    padding: 0.5rem;
+    align-items: flex-start;
     gap: 0.5rem;
-    border-top: 1px solid rgba(11, 224, 184, 0.1);
-    border-bottom: 1px solid rgba(11, 224, 184, 0.1);
+    width: 100%;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    overflow-x: visible;
+    order: 3;
   }
 
   .adminLink {
@@ -718,6 +817,51 @@
   .authDesktop {
     display: none;
   }
+
+  .mobileHidden {
+    display: none;
+  }
+
+  .mobileVisible {
+    display: flex;
+  }
+
+  .desktopAdminNav {
+    display: none;
+  }
+
+  .mobileAdminNav {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-top: 1px solid rgba(11, 224, 184, 0.1);
+    border-bottom: 1px solid rgba(11, 224, 184, 0.1);
+  }
+
+  .adminLink {
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    width: 100%;
+    justify-content: flex-start;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+  }
+
+  .adminIcon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+    margin-right: 8px;
+  }
+
+  .adminLinkText {
+    max-width: none; /* Снимаем ограничение ширины на мобильных */
+  }
 }
 
 @media (max-width: 480px) {
@@ -776,6 +920,10 @@
   .authLink {
     padding: 3px 6px;
     font-size: 0.8rem;
+  }
+
+  .adminNav {
+    padding: 0.5rem 0;
   }
 }
 

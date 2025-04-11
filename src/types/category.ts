@@ -2,10 +2,9 @@ export interface Category {
   _id: string;
   id?: string;
   name: string;
+  description?: string;
   image?: string;
   parentId?: string;
-  slug?: string;
-  order?: number;
   createdAt: string;
   updatedAt: string;
   children?: Category[];

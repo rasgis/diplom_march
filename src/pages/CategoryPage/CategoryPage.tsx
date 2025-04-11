@@ -173,6 +173,14 @@ const CategoryPage: React.FC = () => {
           {currentCategory.name}
         </Typography>
 
+        {currentCategory.description && (
+          <Box className={styles.description}>
+            <Typography variant="body1" className={styles.descriptionText}>
+              {currentCategory.description}
+            </Typography>
+          </Box>
+        )}
+
         {subcategories.length > 0 && (
           <Box className={styles.section}>
             <div className={styles.subcategoriesContainer}>

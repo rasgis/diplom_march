@@ -3,8 +3,6 @@ import { Product, ProductFormData } from "../types/product";
 import { API_CONFIG } from "../config/api";
 import { authService } from "./authService";
 import { fileService } from "./fileService";
-import { optimizeImage } from "../utils/imageUtils";
-
 class ProductService {
   private getHeaders() {
     const token = authService.getToken();
@@ -55,19 +53,14 @@ class ProductService {
   }
 
   async getProductById(id: string): Promise<Product> {
-    console.log("productService.getProductById - ID:", id);
-
     const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(
       id
     )}`;
-    console.log("Request URL:", url);
 
     try {
       const response = await axios.get(url, { headers: this.getHeaders() });
-      console.log("Get product response:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error getting product:", error);
       throw error;
     }
   }
@@ -77,8 +70,14 @@ class ProductService {
 
     // Обрабатываем изображение
     if (product.image) {
-      const imageUrl = await this.processImage(product.image);
-      formData.append("image", imageUrl);
+      try {
+        const imageUrl = await this.processImage(product.image);
+        formData.append("image", imageUrl);
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      console.warn("Изображение не предоставлено");
     }
 
     // Добавляем остальные поля
@@ -94,12 +93,22 @@ class ProductService {
       formData.append("isActive", product.isActive.toString());
     }
 
-    const response = await axios.post(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BASE}`,
-      formData,
-      { headers: this.getHeaders() }
-    );
-    return response.data;
+    console.log("formData готов для отправки");
+
+    try {
+      const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BASE}`;
+
+      const response = await axios.post(url, formData, {
+        headers: this.getHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error("Статус ошибки:", error.response.status);
+        console.error("Данные ошибки:", error.response.data);
+      }
+      throw error;
+    }
   }
 
   async updateProduct(id: string, product: ProductFormData): Promise<Product> {
@@ -107,8 +116,14 @@ class ProductService {
 
     // Обрабатываем изображение
     if (product.image) {
-      const imageUrl = await this.processImage(product.image);
-      formData.append("image", imageUrl);
+      try {
+        const imageUrl = await this.processImage(product.image);
+        formData.append("image", imageUrl);
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      console.warn("Изображение не предоставлено");
     }
 
     // Добавляем остальные поля
@@ -124,12 +139,21 @@ class ProductService {
       formData.append("isActive", product.isActive.toString());
     }
 
-    const response = await axios.put(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(id)}`,
-      formData,
-      { headers: this.getHeaders() }
-    );
-    return response.data;
+    try {
+      const url = `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.PRODUCTS.BY_ID(
+        id
+      )}`;
+
+      const response = await axios.put(url, formData, {
+        headers: this.getHeaders(),
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Ошибка при обновлении продукта:", error);
+      if (axios.isAxiosError(error) && error.response) {
+      }
+      throw error;
+    }
   }
 
   async deleteProduct(id: string): Promise<void> {
@@ -146,10 +170,10 @@ class ProductService {
       name: formData.name,
       description: formData.description,
       price: formData.price,
-      categoryId: formData.categoryId,
+      category: formData.category,
       image: typeof formData.image === "string" ? formData.image : undefined,
       stock: formData.stock,
-      isActive: formData.isActive,
+      unitOfMeasure: formData.unitOfMeasure,
     };
   }
 }

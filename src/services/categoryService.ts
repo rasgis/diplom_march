@@ -37,12 +37,10 @@ class CategoryService {
   }
 
   async createCategory(
-    category: Omit<
-      Category,
-      "_id" | "slug" | "order" | "createdAt" | "updatedAt"
-    >
+    category: Omit<Category, "_id" | "id" | "createdAt" | "updatedAt">
   ): Promise<Category> {
     try {
+      console.log("Sending category data:", category);
       const response = await axios.post(`${API_URL}/categories`, category, {
         headers: this.getAuthHeaders(),
       });

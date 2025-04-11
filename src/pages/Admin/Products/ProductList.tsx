@@ -85,7 +85,6 @@ const ProductList: React.FC = () => {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Изображение</th>
                 <th>Название</th>
                 <th>Цена</th>
@@ -96,7 +95,6 @@ const ProductList: React.FC = () => {
             <tbody>
               {products.map((product) => (
                 <tr key={product._id}>
-                  <td>{product._id}</td>
                   <td>
                     {product.image && (
                       <img
@@ -111,9 +109,12 @@ const ProductList: React.FC = () => {
                     {product.price} ₽ / {product.unitOfMeasure}
                   </td>
                   <td>
-                    {typeof product.category === "object"
-                      ? product.category.name
-                      : product.category}
+                    {product.category
+                      ? typeof product.category === "object"
+                        ? product.category.name || "Без названия"
+                        : categories.find((cat) => cat._id === product.category)
+                            ?.name || "Неизвестная категория"
+                      : "Без категории"}
                   </td>
                   <td>
                     <div className={styles.actions}>

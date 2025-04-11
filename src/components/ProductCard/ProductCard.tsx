@@ -23,11 +23,27 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [openSnackbar, setOpenSnackbar] = useState(false);
 
   // Получаем название категории
-  const categoryName =
-    typeof product.category === "string"
-      ? categories.find((cat) => cat._id === product.category)?.name ||
-        "Неизвестная категория"
-      : product.category.name || "Неизвестная категория";
+  const categoryName = (() => {
+    // Проверяем, существует ли product.category
+    if (!product.category) {
+      return "Без категории";
+    }
+
+    // Если product.category - строка (ID категории)
+    if (typeof product.category === "string") {
+      const foundCategory = categories.find(
+        (cat) => cat._id === product.category
+      );
+      return foundCategory ? foundCategory.name : "Категория не найдена";
+    }
+
+    // Если product.category - объект (с полем name)
+    if (product.category.name) {
+      return product.category.name;
+    }
+
+    return "Неизвестная категория";
+  })();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Предотвращаем переход по ссылке

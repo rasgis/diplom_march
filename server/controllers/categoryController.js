@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Category from "../models/categoryModel.js";
+import mongoose from "mongoose";
 
 // @desc    Получение всех категорий
 // @route   GET /api/categories
@@ -27,33 +28,48 @@ const getCategoryById = asyncHandler(async (req, res) => {
 // @route   POST /api/categories
 // @access  Private/Admin
 const createCategory = asyncHandler(async (req, res) => {
-  const { name, parentId, slug, order } = req.body;
+  try {
+    const { name, parentId, image, description } = req.body;
 
-  // Получаем путь к загруженному файлу из multer
-  const image = req.file
-    ? `/uploads/categories/${req.file.filename}`
-    : req.body.image;
+    if (!name) {
+      res.status(400);
+      throw new Error("Название категории обязательно");
+    }
 
-  const categoryExists = await Category.findOne({ name });
+    if (!image) {
+      res.status(400);
+      throw new Error("Изображение категории обязательно");
+    }
 
-  if (categoryExists) {
-    res.status(400);
-    throw new Error("Категория с таким названием уже существует");
-  }
+    const categoryExists = await Category.findOne({ name });
 
-  const category = await Category.create({
-    name,
-    image,
-    parentId,
-    slug,
-    order,
-  });
+    if (categoryExists) {
+      res.status(400);
+      throw new Error("Категория с таким названием уже существует");
+    }
 
-  if (category) {
-    res.status(201).json(category);
-  } else {
-    res.status(400);
-    throw new Error("Невалидные данные категории");
+    // Преобразуем parentId в ObjectId, если он не пустой
+    const parentIdObj =
+      parentId && parentId !== ""
+        ? new mongoose.Types.ObjectId(parentId)
+        : null;
+
+    const category = await Category.create({
+      name,
+      image,
+      description,
+      parentId: parentIdObj,
+    });
+
+    if (category) {
+      res.status(201).json(category);
+    } else {
+      res.status(400);
+      throw new Error("Невалидные данные категории");
+    }
+  } catch (error) {
+    console.error("Error in createCategory:", error);
+    throw error;
   }
 });
 
@@ -61,33 +77,34 @@ const createCategory = asyncHandler(async (req, res) => {
 // @route   PUT /api/categories/:id
 // @access  Private/Admin
 const updateCategory = asyncHandler(async (req, res) => {
-  const { name, description } = req.body;
+  try {
+    const { name, parentId, image, description } = req.body;
 
-  // Получаем путь к загруженному файлу из multer
-  const image = req.file
-    ? `/uploads/categories/${req.file.filename}`
-    : req.body.image;
+    const category = await Category.findById(req.params.id);
 
-  const category = await Category.findById(req.params.id);
-
-  if (category) {
-    if (name && name !== category.name) {
-      const categoryExists = await Category.findOne({ name });
-      if (categoryExists) {
-        res.status(400);
-        throw new Error("Категория с таким названием уже существует");
+    if (category) {
+      if (name && name !== category.name) {
+        const categoryExists = await Category.findOne({ name });
+        if (categoryExists) {
+          res.status(400);
+          throw new Error("Категория с таким названием уже существует");
+        }
+        category.name = name;
       }
-      category.name = name;
+
+      category.parentId = parentId || category.parentId;
+      category.image = image || category.image;
+      category.description = description || category.description;
+
+      const updatedCategory = await category.save();
+      res.json(updatedCategory);
+    } else {
+      res.status(404);
+      throw new Error("Категория не найдена");
     }
-
-    category.description = description || category.description;
-    category.image = image || category.image;
-
-    const updatedCategory = await category.save();
-    res.json(updatedCategory);
-  } else {
-    res.status(404);
-    throw new Error("Категория не найдена");
+  } catch (error) {
+    console.error("Error in updateCategory:", error);
+    throw error;
   }
 });
 
@@ -95,14 +112,19 @@ const updateCategory = asyncHandler(async (req, res) => {
 // @route   DELETE /api/categories/:id
 // @access  Private/Admin
 const deleteCategory = asyncHandler(async (req, res) => {
-  const category = await Category.findById(req.params.id);
+  try {
+    const category = await Category.findById(req.params.id);
 
-  if (category) {
-    await category.deleteOne();
-    res.json({ message: "Категория удалена" });
-  } else {
-    res.status(404);
-    throw new Error("Категория не найдена");
+    if (category) {
+      await category.deleteOne();
+      res.json({ message: "Категория удалена" });
+    } else {
+      res.status(404);
+      throw new Error("Категория не найдена");
+    }
+  } catch (error) {
+    console.error("Error in deleteCategory:", error);
+    throw error;
   }
 });
 
